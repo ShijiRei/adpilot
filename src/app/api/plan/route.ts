@@ -3,6 +3,8 @@ import ZAI from 'z-ai-web-dev-sdk';
 
 export async function POST(req: NextRequest) {
   try {
+    const body = await req.json();
+
     const {
       platforms,
       budget,
@@ -13,22 +15,35 @@ export async function POST(req: NextRequest) {
       productDescription,
       targetAudience,
       tone,
-    } = await req.json();
+    } = body;
 
-    const platformList = platforms.join(', ');
-    const budgetDisplay = budgetPeriod === 'monthly' ? `$${budget.toLocaleString()}/month` : `$${budget.toLocaleString()}/week`;
+    if (!platforms || platforms.length === 0) {
+      return NextResponse.json({ error: 'Please select at least one platform.' }, { status: 400 });
+    }
 
-    const systemPrompt = `You are an expert digital advertising strategist. Generate a comprehensive, actionable campaign plan based on the user's inputs. Be specific with numbers, targeting options, and actionable recommendations. Use clear formatting with headers, bullet points, and bold text. Do NOT use any markdown headers (no # or ##). Use bold (**text**) for section titles instead. The plan should feel professional, structured, and immediately useful.`;
+    if (!budget || budget < 50) {
+      return NextResponse.json({ error: 'Budget must be at least $50.' }, { status: 400 });
+    }
+
+    const platformList = Array.isArray(platforms) ? platforms.join(', ') : String(platforms);
+    const budgetDisplay = budgetPeriod === 'monthly' ? `$${Number(budget).toLocaleString()}/month` : `$${Number(budget).toLocaleString()}/week`;
+    const safeGoalName = goalName || campaignGoal || 'Not specified';
+    const safeIndustry = industry || 'General';
+    const safeProduct = productDescription || 'A general product or service';
+    const safeAudience = targetAudience || 'General audience based on the selected industry';
+    const safeTone = tone || 'professional';
+
+    const systemPrompt = `You are an expert digital advertising strategist. Generate a comprehensive, actionable campaign plan based on the user's inputs. Be specific with numbers, targeting options, and actionable recommendations. Use clear formatting with bold text, bullet points, and numbered lists. Do NOT use any markdown headers (no # or ## symbols). Use bold (**text**) for section titles instead. The plan should feel professional, structured, and immediately useful. Keep the total length under 2000 words.`;
 
     const userPrompt = `Create a detailed ad campaign plan with the following details:
 
 **Platform(s):** ${platformList}
 **Budget:** ${budgetDisplay}
-**Industry:** ${industry}
-**Campaign Goal:** ${goalName}
-**Product/Service:** ${productDescription || 'Not specified — provide general recommendations'}
-**Target Audience:** ${targetAudience || 'Not specified — suggest based on industry and goal'}
-**Tone:** ${tone}
+**Industry:** ${safeIndustry}
+**Campaign Goal:** ${safeGoalName}
+**Product/Service:** ${safeProduct}
+**Target Audience:** ${safeAudience}
+**Tone:** ${safeTone}
 
 Generate the plan with these sections:
 
@@ -55,10 +70,15 @@ Make every recommendation specific to the selected platforms. Include dollar amo
       max_tokens: 2500,
     });
 
-    const plan = completion.choices[0]?.message?.content || 'Failed to generate campaign plan. Please try again.';
+    const plan = completion.choices?.[0]?.message?.content;
+
+    if (!plan) {
+      return NextResponse.json({ error: 'AI returned an empty response. Please try again.' }, { status: 500 });
+    }
 
     return NextResponse.json({ plan });
   } catch (error: unknown) {
+    console.error('[Plan API Error]', error);
     const message = error instanceof Error ? error.message : 'An unexpected error occurred';
     return NextResponse.json({ error: message }, { status: 500 });
   }

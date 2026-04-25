@@ -107,12 +107,20 @@ export default function GuidedPlanner() {
         }),
       });
 
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({ error: `Server error (${response.status})` }));
+        throw new Error(errData.error || `Server returned ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (data.error) throw new Error(data.error);
+      if (!data.plan) throw new Error('Empty plan received from server.');
       setGeneratedPlan(data.plan);
-    } catch {
-      setGeneratedPlan('An error occurred while generating your plan. Please try again.');
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : 'An unknown error occurred.';
+      console.error('[Plan Generation Error]', errorMsg);
+      setGeneratedPlan(`**Error:** ${errorMsg}\n\nPlease check your inputs and try again. If the issue persists, try simplifying your product description.`);
     } finally {
       setIsGenerating(false);
     }
