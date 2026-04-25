@@ -15,7 +15,7 @@ import {
   ArrowRight, ArrowLeft, Check, Loader2, Sparkles,
   Target, DollarSign, Users, Wand2, ClipboardList,
   Facebook, Search, Youtube, Linkedin, Pin, RotateCcw,
-  FileText, ChevronRight
+  FileText, ChevronRight, MapPin, Globe
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -61,6 +61,7 @@ export default function GuidedPlanner() {
   const [goalId, setGoalId] = useState<string>('');
   const [productDescription, setProductDescription] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
+  const [location, setLocation] = useState('');
   const [tone, setTone] = useState('professional');
   const [generatedPlan, setGeneratedPlan] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -103,6 +104,7 @@ export default function GuidedPlanner() {
           goalName: selectedGoalData?.name || goalId,
           productDescription,
           targetAudience,
+          location,
           tone,
         }),
       });
@@ -134,6 +136,7 @@ export default function GuidedPlanner() {
     setGoalId('');
     setProductDescription('');
     setTargetAudience('');
+    setLocation('');
     setTone('professional');
     setGeneratedPlan('');
   };
@@ -243,6 +246,8 @@ export default function GuidedPlanner() {
               productDescription={productDescription}
               setProductDescription={setProductDescription}
               targetAudience={setTargetAudience}
+              location={location}
+              setLocation={setLocation}
               tone={tone}
               setTone={setTone}
             />
@@ -539,11 +544,14 @@ function Step3({
 /* ───── Step 4: Final Details ───── */
 function Step4({
   productDescription, setProductDescription,
-  targetAudience, tone, setTone,
+  targetAudience, location, setLocation,
+  tone, setTone,
 }: {
   productDescription: string;
   setProductDescription: (v: string) => void;
   targetAudience: (v: string) => void;
+  location: string;
+  setLocation: (v: string) => void;
   tone: string;
   setTone: (v: string) => void;
 }) {
@@ -555,7 +563,7 @@ function Step4({
           Final Details
         </CardTitle>
         <CardDescription>
-          Tell us about your product and audience for a more personalized plan.
+          Tell us about your product, location, and audience for a more personalized plan.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -572,6 +580,58 @@ function Step4({
           <p className="text-xs text-muted-foreground">
             The more detail you provide, the better your campaign plan will be.
           </p>
+        </div>
+
+        {/* Location Section */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-amber-500" />
+            Campaign Location
+          </Label>
+          <p className="text-xs text-muted-foreground -mt-1">
+            Where should your ads be shown? This affects costs, audience availability, and creative strategy.
+          </p>
+
+          {/* Quick location presets */}
+          <div className="flex flex-wrap gap-2 mb-2">
+            {[
+              { label: 'United States', value: 'United States' },
+              { label: 'United Kingdom', value: 'United Kingdom' },
+              { label: 'Canada', value: 'Canada' },
+              { label: 'Australia', value: 'Australia' },
+              { label: 'Europe', value: 'Europe' },
+              { label: 'Middle East', value: 'Middle East (GCC)' },
+              { label: 'Global', value: 'Global (worldwide)' },
+            ].map((loc) => (
+              <button
+                key={loc.value}
+                onClick={() => setLocation(loc.value)}
+                className={cn(
+                  'px-3 py-1.5 rounded-lg border text-xs font-medium transition-all',
+                  location === loc.value
+                    ? 'border-amber-400 bg-amber-50 text-amber-700'
+                    : 'border-border hover:border-amber-200 text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {loc.label}
+              </button>
+            ))}
+          </div>
+
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Or type a specific location (e.g., New York City, Germany, North Africa...)"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          />
+
+          {location && (
+            <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg">
+              <Globe className="w-3.5 h-3.5" />
+              <span>Targeting: <strong>{location}</strong></span>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">

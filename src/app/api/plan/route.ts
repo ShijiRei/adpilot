@@ -29,8 +29,9 @@ export async function POST(req: NextRequest) {
     const budgetDisplay = budgetPeriod === 'monthly' ? `$${Number(budget).toLocaleString()}/month` : `$${Number(budget).toLocaleString()}/week`;
     const safeGoalName = goalName || campaignGoal || 'Not specified';
     const safeIndustry = industry || 'General';
+    const safeLocation = location || 'Not specified';
     const safeProduct = productDescription || 'A general product or service';
-    const safeAudience = targetAudience || 'General audience based on the selected industry';
+    const safeAudience = targetAudience || 'General audience based on the selected industry and location';
     const safeTone = tone || 'professional';
 
     const systemPrompt = `You are an expert digital advertising strategist. Generate a comprehensive, actionable campaign plan based on the user's inputs. Be specific with numbers, targeting options, and actionable recommendations. Use clear formatting with bold text, bullet points, and numbered lists. Do NOT use any markdown headers (no # or ## symbols). Use bold (**text**) for section titles instead. The plan should feel professional, structured, and immediately useful. Keep the total length under 2000 words.`;
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
 **Budget:** ${budgetDisplay}
 **Industry:** ${safeIndustry}
 **Campaign Goal:** ${safeGoalName}
+**Location / Geo-Targeting:** ${safeLocation}
 **Product/Service:** ${safeProduct}
 **Target Audience:** ${safeAudience}
 **Tone:** ${safeTone}
@@ -49,7 +51,7 @@ Generate the plan with these sections:
 
 1. **Campaign Overview** — Brief summary and strategy direction
 2. **Budget Allocation** — How to split the ${budgetDisplay} budget across platforms, ad sets, and stages
-3. **Targeting Strategy** — Detailed audience targeting for each platform (demographics, interests, behaviors, lookalikes)
+3. **Targeting Strategy** — Detailed audience targeting for each platform (demographics, interests, behaviors, lookalikes). Include location-specific targeting recommendations (geo-targeting, radius targeting, language settings, local vs national reach).
 4. **Ad Creative Strategy** — Recommended ad formats, creative angles, and content ideas for each platform
 5. **Campaign Structure** — How to organize campaigns, ad sets, and ads (suggested naming and grouping)
 6. **Timeline & Milestones** — Week-by-week plan for the first 4 weeks
