@@ -46,3 +46,27 @@ Stage Summary:
 - Location now properly flows from UI → API → AI prompt
 - Fixed two bugs (location destructuring, targetAudience prop)
 - Country is now a required step before generating the plan
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Improve onboarding flow — Quick Campaign Checkup with instant insights
+
+Work Log:
+- Created new QuickStart component (src/components/advisor/quick-start.tsx)
+- 4-essentials onboarding: Platform (multi-select cards), Objective (single select), Budget Range (4 tiers), Pain Points (multi-select chips)
+- All 4 questions visible on single page with real-time progress indicator
+- Computed instant insights client-side from existing platform/goal data (no AI call needed)
+- Insights include: Budget Assessment (low/moderate/strong with recommendations), Platform Benchmarks (CPC/CPM/min budget), Key Metrics to Track, Pain Point Fixes, Quick Tips, Common Mistakes, Recommended Next Steps
+- Budget assessment calculates per-platform daily spend and compares against platform minimums
+- Pain remedies are specific fixes per selected pain point
+- CTA flow: "Get Quick Campaign Insights" → insights page → "Get Full AI Campaign Plan" → guided planner
+- Added 'quickstart' tab to navigation sidebar
+- Updated hero CTA from "Build Your Campaign Plan" to "Get Quick Campaign Insights"
+- Build passed with no errors
+
+Stage Summary:
+- New Quick Checkup tab — 30-second onboarding with 4 essential questions
+- Instant data-driven insights (budget assessment, benchmarks, fixes, tips)
+- Low-friction funnel: home → quick checkup → insights → full planner
+- No sign-up or AI call required for quick insights

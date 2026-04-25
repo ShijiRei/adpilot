@@ -9,6 +9,7 @@ import BudgetCalculator from '@/components/advisor/budget-calc';
 import AdCopyGenerator from '@/components/advisor/ad-copy';
 import PlatformComparison from '@/components/advisor/comparison';
 import GuidedPlanner from '@/components/advisor/guided-planner';
+import QuickStart from '@/components/advisor/quick-start';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -20,7 +21,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type TabId = 'home' | 'planner' | 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
+type TabId = 'home' | 'quickstart' | 'planner' | 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
 
 interface NavItem {
   id: TabId;
@@ -31,6 +32,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: 'home', label: 'Home', icon: <Zap className="w-4 h-4" />, description: 'AI ad campaign advisor for smarter spending' },
+  { id: 'quickstart', label: 'Quick Checkup', icon: <Target className="w-4 h-4" />, description: '30-second campaign health check' },
   { id: 'planner', label: 'Campaign Planner', icon: <Wand2 className="w-4 h-4" />, description: 'Step-by-step guided campaign builder' },
   { id: 'advisor', label: 'AI Advisor', icon: <MessageSquare className="w-4 h-4" />, description: 'Chat with AI for campaign tips' },
   { id: 'guide', label: 'Platform Guide', icon: <BookOpen className="w-4 h-4" />, description: 'Detailed platform guides & tips' },
@@ -86,7 +88,7 @@ function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onCha
             className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 h-12 text-base font-semibold shadow-lg shadow-amber-200/50"
           >
             <Wand2 className="w-5 h-5" />
-            Build Your Campaign Plan
+            Get Quick Campaign Insights
             <ArrowRight className="w-4 h-4" />
           </Button>
           <Button
@@ -398,7 +400,14 @@ How can I help you today?`,
               transition={{ duration: 0.2 }}
             >
               {activeTab === 'home' && (
-                <HeroSection onGetStarted={() => setActiveTab('planner')} onChat={() => setActiveTab('advisor')} />
+                <HeroSection onGetStarted={() => setActiveTab('quickstart')} onChat={() => setActiveTab('advisor')} />
+              )}
+
+              {activeTab === 'quickstart' && (
+                <QuickStart
+                  onGoToPlanner={() => setActiveTab('planner')}
+                  onDismiss={() => setActiveTab('home')}
+                />
               )}
 
               {activeTab === 'planner' && (
