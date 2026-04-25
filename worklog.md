@@ -70,3 +70,27 @@ Stage Summary:
 - Instant data-driven insights (budget assessment, benchmarks, fixes, tips)
 - Low-friction funnel: home → quick checkup → insights → full planner
 - No sign-up or AI call required for quick insights
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: UX polish — typography, CTAs, spacing, copy, progress indicators
+
+Work Log:
+- Added CSS design tokens to globals.css: typography scale (.text-hero, .text-section-title, .text-card-title, .text-body, .text-caption), CTA button system (.btn-primary with hover lift/active press/disabled states, .btn-secondary), card hover micro-interaction (.card-interactive), and step indicator system (.step-circle, .step-line with pending/active/done states)
+- Rewrote hero section: tighter headline (merged two green spans into one), shorter subtitle, smaller badge with uppercase tracking
+- Replaced shadcn Button CTAs with native buttons using .btn-primary/.btn-secondary for consistent contrast and hover lift effect
+- Trimmed all copy: outcome cards shortened by ~50%, feature descriptions cut to single sentence, nav descriptions reduced to 2-word phrases
+- Replaced bullet-separated trust signals with pipe separators, reduced icon sizes
+- Polished quick-start: new step indicator using CSS classes with connecting lines, tighter spacing (space-y-6 instead of space-y-8), smaller CTA buttons (h-11 instead of h-12), trimmed insights header copy
+- Polished sidebar: shorter nav descriptions, tighter footer padding
+- Replaced all CTA buttons across quick-start with btn-primary class for visual consistency
+- Removed unused Button import from quick-start.tsx
+
+Stage Summary:
+- Consistent typography scale across entire app
+- CTAs have stronger contrast (darker gradient) with hover lift micro-interaction
+- Copy reduced ~40% across hero, cards, features, and insights
+- Step indicator system in globals.css ready for reuse
+- Card hover lift effect (.card-interactive) for trust and polish
+- Build passed with no errors

@@ -31,14 +31,14 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: 'home', label: 'Home', icon: <Zap className="w-4 h-4" />, description: 'AI ad campaign advisor for smarter spending' },
-  { id: 'quickstart', label: 'Quick Checkup', icon: <Target className="w-4 h-4" />, description: '30-second campaign health check' },
-  { id: 'planner', label: 'Campaign Planner', icon: <Wand2 className="w-4 h-4" />, description: 'Step-by-step guided campaign builder' },
-  { id: 'advisor', label: 'AI Advisor', icon: <MessageSquare className="w-4 h-4" />, description: 'Chat with AI for campaign tips' },
-  { id: 'guide', label: 'Platform Guide', icon: <BookOpen className="w-4 h-4" />, description: 'Detailed platform guides & tips' },
-  { id: 'budget', label: 'Budget Calculator', icon: <Calculator className="w-4 h-4" />, description: 'Estimate costs and performance' },
-  { id: 'copy', label: 'Ad Copy Generator', icon: <Sparkles className="w-4 h-4" />, description: 'Generate compelling ad copy' },
-  { id: 'comparison', label: 'Compare Platforms', icon: <Scale className="w-4 h-4" />, description: 'Side-by-side platform analysis' },
+  { id: 'home', label: 'Home', icon: <Zap className="w-4 h-4" />, description: 'Dashboard' },
+  { id: 'quickstart', label: 'Quick Checkup', icon: <Target className="w-4 h-4" />, description: '30-sec health check' },
+  { id: 'planner', label: 'Campaign Planner', icon: <Wand2 className="w-4 h-4" />, description: 'AI plan builder' },
+  { id: 'advisor', label: 'AI Advisor', icon: <MessageSquare className="w-4 h-4" />, description: 'Chat with AI' },
+  { id: 'guide', label: 'Platform Guide', icon: <BookOpen className="w-4 h-4" />, description: 'Tips & checklists' },
+  { id: 'budget', label: 'Budget Calculator', icon: <Calculator className="w-4 h-4" />, description: 'Cost estimates' },
+  { id: 'copy', label: 'Ad Copy Generator', icon: <Sparkles className="w-4 h-4" />, description: 'Generate copy' },
+  { id: 'comparison', label: 'Compare Platforms', icon: <Scale className="w-4 h-4" />, description: 'Side-by-side' },
 ];
 
 const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNode }[] = [
@@ -53,127 +53,120 @@ const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNod
 /* ───── Hero / Landing Section ───── */
 function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onChat: () => void }) {
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
-      {/* Value Prop — The One-Liner */}
-      <div className="text-center pt-8 sm:pt-12">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-sm font-medium mb-6">
-          <Zap className="w-4 h-4" />
+    <div className="space-y-10 max-w-4xl mx-auto">
+      {/* Value Prop */}
+      <div className="text-center pt-6 sm:pt-10">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold mb-6 tracking-wide uppercase">
+          <Zap className="w-3.5 h-3.5" />
           AI-Powered Ad Campaign Advisor
         </div>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight mb-4">
+        <h1 className="text-hero mb-4">
           Stop wasting ad spend. Get a{' '}
           <span className="bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
-            5-minute AI campaign plan
+            5-minute AI plan
           </span>{' '}
-          with clear fixes to{' '}
+          to{' '}
           <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
-            boost ROAS
-          </span>{' '}
-          and{' '}
-          <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
-            lower CPA
+            boost ROAS &amp; lower CPA
           </span>.
         </h1>
 
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          For founders, ecommerce brands, and marketers — plan, optimize, and troubleshoot ad campaigns across Meta, TikTok, Google, YouTube, LinkedIn &amp; Pinterest.
+        <p className="text-body text-muted-foreground max-w-xl mx-auto mb-8">
+          For founders &amp; marketers. Plan, optimize, and troubleshoot ads across Meta, TikTok, Google, YouTube, LinkedIn &amp; Pinterest.
         </p>
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
-          <Button
-            size="lg"
+          <button
             onClick={onGetStarted}
-            className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 h-12 text-base font-semibold shadow-lg shadow-amber-200/50"
+            className="btn-primary gap-2 px-8 h-12 text-sm rounded-xl inline-flex items-center"
           >
             <Wand2 className="w-5 h-5" />
-            Get Quick Campaign Insights
+            Get Quick Insights — 30 sec
             <ArrowRight className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
+          </button>
+          <button
             onClick={onChat}
-            className="gap-2 h-12 px-8 text-base border-2 hover:bg-muted/50"
+            className="btn-secondary gap-2 px-8 h-12 text-sm rounded-xl inline-flex items-center bg-transparent"
           >
-            <MessageSquare className="w-5 h-5" />
-            Chat with AI Advisor
-          </Button>
+            <MessageSquare className="w-4 h-4" />
+            Chat with AI
+          </button>
         </div>
 
-        {/* Trust Signals — Platform Logos */}
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mb-10">
+        {/* Platform Logos */}
+        <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8">
           {platformSidebarItems.map((p) => (
-            <div key={p.id} className="flex items-center gap-1.5 text-muted-foreground/60 text-sm">
-              {p.icon}
-              <span className="hidden sm:inline text-xs font-medium">{p.name}</span>
+            <div key={p.id} className="flex items-center gap-1.5 text-muted-foreground/50">
+              <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:w-auto">{p.icon}</span>
+              <span className="text-xs font-medium hidden sm:inline">{p.name}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* 3 Outcome Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <OutcomeCard
-          icon={<TrendingUp className="w-6 h-6" />}
-          title="Lower Your CPA"
-          description="Get platform-specific budget allocation and bidding strategies that cut cost-per-acquisition by targeting the right audience segments from day one."
+          icon={<TrendingUp className="w-5 h-5" />}
+          title="Lower CPA"
+          description="Platform-specific budget splits &amp; bidding to target the right segments from day one."
           gradient="from-emerald-50 to-teal-50"
           iconBg="bg-emerald-100 text-emerald-600"
         />
         <OutcomeCard
-          icon={<Shield className="w-6 h-6" />}
+          icon={<Shield className="w-5 h-5" />}
           title="Boost ROAS"
-          description="AI-generated campaign plans with creative strategies, ad formats, and optimization playbooks tailored to maximize your return on every dollar spent."
+          description="AI-generated creative strategies &amp; optimization playbooks to maximize every dollar."
           gradient="from-amber-50 to-orange-50"
           iconBg="bg-amber-100 text-amber-600"
         />
         <OutcomeCard
-          icon={<Clock className="w-6 h-6" />}
+          icon={<Clock className="w-5 h-5" />}
           title="Save Hours"
-          description="Skip the guesswork and research. Get a complete, actionable plan in 5 minutes — targeting, timeline, budget split, creative ideas, and optimization steps."
+          description="Complete actionable plan in 5 min — targeting, timeline, budget, creatives &amp; next steps."
           gradient="from-blue-50 to-indigo-50"
           iconBg="bg-blue-100 text-blue-600"
         />
       </div>
 
-      {/* What You Get — Feature Grid */}
-      <div className="bg-white rounded-2xl border p-6 sm:p-8">
-        <h2 className="text-xl font-bold mb-6 text-center">Everything you need to launch smarter campaigns</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Feature Grid */}
+      <div className="bg-white rounded-2xl border p-5 sm:p-6">
+        <h2 className="text-section-title mb-5 text-center">6 tools. One mission: smarter ad spend.</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
-            { icon: <Wand2 className="w-5 h-5" />, title: 'Guided Campaign Planner', desc: '5-step wizard that builds a full AI campaign plan tailored to your platform, budget, industry, and country.' },
-            { icon: <MessageSquare className="w-5 h-5" />, title: 'AI Campaign Advisor', desc: 'Chat with AI about targeting, bidding, creative strategy, and troubleshooting — get instant expert answers.' },
-            { icon: <BookOpen className="w-5 h-5" />, title: 'Platform Deep Dives', desc: 'Detailed guides for Meta, TikTok, Google, YouTube, LinkedIn & Pinterest — tips, mistakes, and checklists.' },
-            { icon: <Calculator className="w-5 h-5" />, title: 'Budget Calculator', desc: 'Estimate CPC, CTR, and expected results per platform. See how far your budget goes before spending a cent.' },
-            { icon: <Sparkles className="w-5 h-5" />, title: 'Ad Copy Generator', desc: 'Generate headlines, body copy, and CTAs in multiple tones — professional, casual, bold, or inspirational.' },
-            { icon: <Scale className="w-5 h-5" />, title: 'Platform Comparison', desc: 'Side-by-side comparison of costs, audience sizes, strengths, and weaknesses to pick the right platform.' },
+            { icon: <Target className="w-4 h-4" />, title: 'Quick Checkup', desc: '4 questions. Instant insights on budget, targeting &amp; fixes.' },
+            { icon: <Wand2 className="w-4 h-4" />, title: 'Campaign Planner', desc: '5-step AI wizard — full plan tailored to your platform, budget &amp; country.' },
+            { icon: <MessageSquare className="w-4 h-4" />, title: 'AI Advisor', desc: 'Ask anything. Get expert answers on targeting, bidding &amp; creative.' },
+            { icon: <BookOpen className="w-4 h-4" />, title: 'Platform Guides', desc: 'Deep dives with tips, mistakes &amp; pre-launch checklists.' },
+            { icon: <Calculator className="w-4 h-4" />, title: 'Budget Calculator', desc: 'Estimate CPC, CTR &amp; results before you spend a cent.' },
+            { icon: <Sparkles className="w-4 h-4" />, title: 'Ad Copy Generator', desc: 'Headlines, body copy &amp; CTAs in 5 tones.' },
           ].map((f) => (
-            <div key={f.title} className="flex items-start gap-3 p-3 rounded-xl hover:bg-muted/30 transition-colors">
-              <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+            <div key={f.title} className="flex items-start gap-3 p-3 rounded-xl card-interactive cursor-pointer" onClick={f.title === 'Quick Checkup' ? onGetStarted : f.title === 'AI Advisor' ? onChat : undefined}>
+              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
                 {f.icon}
               </div>
-              <div>
-                <h3 className="font-semibold text-sm mb-0.5">{f.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+              <div className="min-w-0">
+                <h3 className="text-card-title">{f.title}</h3>
+                <p className="text-caption mt-0.5">{f.desc}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Bottom Trust Signals */}
-      <div className="text-center pb-8">
-        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          Free to use
-          <span className="mx-1">·</span>
-          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          No sign-up required
-          <span className="mx-1">·</span>
-          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          Results in under 5 minutes
+      {/* Trust Signals */}
+      <div className="text-center pb-6">
+        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+          Free
+          <span className="text-border">|</span>
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+          No sign-up
+          <span className="text-border">|</span>
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+          Results in &lt;5 min
         </div>
       </div>
     </div>
@@ -188,12 +181,12 @@ function OutcomeCard({ icon, title, description, gradient, iconBg }: {
   iconBg: string;
 }) {
   return (
-    <div className={cn('p-5 rounded-2xl border bg-gradient-to-br', gradient)}>
-      <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center mb-3', iconBg)}>
+    <div className={cn('p-4 rounded-xl border bg-gradient-to-br card-interactive', gradient)}>
+      <div className={cn('w-9 h-9 rounded-lg flex items-center justify-center mb-2', iconBg)}>
         {icon}
       </div>
-      <h3 className="font-bold text-base mb-1">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+      <h3 className="text-card-title">{title}</h3>
+      <p className="text-caption mt-1">{description}</p>
     </div>
   );
 }
@@ -332,14 +325,14 @@ How can I help you today?`,
         </ScrollArea>
 
         {/* Footer */}
-        <div className="p-4 border-t">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100">
-            <div className="flex items-center gap-2 mb-1">
-              <Target className="w-4 h-4 text-amber-600" />
-              <span className="text-xs font-semibold">Pro Tip</span>
+        <div className="p-3 border-t">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Target className="w-3.5 h-3.5 text-amber-600" />
+              <span className="text-[11px] font-semibold">Pro Tip</span>
             </div>
-            <p className="text-[11px] text-muted-foreground">
-              Select a platform above to get personalized tips, checklists, and AI-powered advice.
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Pick a platform below for personalized tips &amp; checklists.
             </p>
           </div>
         </div>

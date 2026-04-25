@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { PlatformId, platforms, campaignGoals, CampaignGoal } from '@/lib/ad-platforms';
@@ -197,43 +196,40 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
             transition={{ duration: 0.3 }}
           >
             {/* Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium mb-3">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold mb-3 tracking-wide uppercase">
                 <Clock className="w-3 h-3" />
                 Takes 30 seconds
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold mb-2">
+              <h1 className="text-section-title sm:text-xl mb-1">
                 Quick Campaign Checkup
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-base">
-                Answer 4 quick questions and get instant, actionable insights — no sign-up needed.
+              <p className="text-caption">
+                4 questions. Instant insights. No sign-up.
               </p>
             </div>
 
-            {/* Progress */}
-            <div className="flex items-center justify-center gap-2 mb-8">
+            {/* Progress Indicator */}
+            <div className="flex items-center justify-center mb-6">
               {[
                 { done: selectedPlatforms.length > 0, label: 'Platform' },
                 { done: selectedGoal !== '', label: 'Objective' },
                 { done: selectedBudget !== '', label: 'Budget' },
                 { done: selectedPains.length > 0, label: 'Pain' },
               ].map((s, i) => (
-                <div key={s.label} className="flex items-center gap-2">
-                  <div className={cn(
-                    'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all',
-                    s.done ? 'bg-emerald-500 text-white' : 'bg-muted text-muted-foreground'
-                  )}>
+                <div key={s.label} className="flex items-center">
+                  <div className={cn('step-circle', s.done ? 'step-circle-done' : 'step-circle-pending')}>
                     {s.done ? <Check className="w-3.5 h-3.5" /> : i + 1}
                   </div>
-                  <span className={cn('text-xs font-medium hidden sm:block', s.done ? 'text-emerald-600' : 'text-muted-foreground')}>
+                  <span className={cn('text-[11px] font-medium hidden sm:block mx-1.5', s.done ? 'text-emerald-600' : 'text-muted-foreground')}>
                     {s.label}
                   </span>
-                  {i < 3 && <div className="w-6 h-0.5 bg-muted rounded-full" />}
+                  {i < 3 && <div className={cn('step-line', s.done ? 'step-line-active' : '')} />}
                 </div>
               ))}
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* 1. Platform */}
               <section>
                 <div className="flex items-center gap-2 mb-3">
@@ -380,20 +376,19 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
               </section>
 
               {/* CTA */}
-              <div className="flex flex-col sm:flex-row items-center justify-between pt-2 pb-8 gap-3">
-                <button onClick={onDismiss} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <div className="flex flex-col sm:flex-row items-center justify-between pt-2 pb-6 gap-3">
+                <button onClick={onDismiss} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                   &larr; Back to home
                 </button>
-                <Button
+                <button
                   onClick={handleGetInsights}
                   disabled={!canGetInsights}
-                  size="lg"
-                  className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 text-base font-semibold shadow-lg shadow-amber-200/50"
+                  className="btn-primary gap-2 px-8 h-11 text-sm rounded-xl inline-flex items-center"
                 >
                   <Sparkles className="w-4 h-4" />
                   Get My Quick Insights
                   <ArrowRight className="w-4 h-4" />
-                </Button>
+                </button>
               </div>
             </div>
           </motion.div>
@@ -408,21 +403,21 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
           >
             {/* Header */}
             <div className="text-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium mb-3">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold mb-3 tracking-wide uppercase">
                 <CheckCircle2 className="w-3 h-3" />
-                Personalized insights ready
+                Insights ready
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold mb-2">
-                Your Quick Campaign Insights
+              <h1 className="text-section-title sm:text-xl mb-1">
+                Your Campaign Insights
               </h1>
-              <p className="text-muted-foreground text-sm">
-                Based on: {insights.platformSummary.map(p => p.name).join(', ')} &middot; {selectedGoals[selectedGoal as CampaignGoal]?.name} &middot; {budgetRanges.find(b => b.id === selectedBudget)?.label}
+              <p className="text-caption">
+                {insights.platformSummary.map(p => p.name).join(', ')} &middot; {selectedGoals[selectedGoal as CampaignGoal]?.name} &middot; {budgetRanges.find(b => b.id === selectedBudget)?.label}
               </p>
             </div>
 
-            {/* Budget Assessment — Top Priority */}
+            {/* Budget Assessment */}
             <div className={cn(
-              'p-5 rounded-2xl border-2',
+              'p-4 rounded-xl border-2',
               insights.budgetAssessment.status === 'low' && 'border-red-200 bg-red-50/50',
               insights.budgetAssessment.status === 'moderate' && 'border-amber-200 bg-amber-50/50',
               insights.budgetAssessment.status === 'strong' && 'border-emerald-200 bg-emerald-50/50',
@@ -446,9 +441,9 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-2">{insights.budgetAssessment.message}</p>
-              <div className="flex items-start gap-2 bg-white/60 rounded-lg p-3 border">
-                <Lightbulb className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
-                <p className="text-xs leading-relaxed"><strong>Recommendation:</strong> {insights.budgetAssessment.recommendation}</p>
+              <div className="flex items-start gap-2 bg-white/60 rounded-lg p-2.5 border">
+                <Lightbulb className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+                <p className="text-[11px] leading-relaxed"><strong>Fix:</strong> {insights.budgetAssessment.recommendation}</p>
               </div>
             </div>
 
@@ -500,7 +495,7 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
                 <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-100">
                   <p className="text-[11px] text-blue-700 flex items-start gap-1.5">
                     <Lightbulb className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                    <span>Focus on 2-3 key metrics. Tracking too many dilutes optimization efforts.</span>
+                    <span>Focus on 2-3 metrics. More dilutes optimization.</span>
                   </p>
                 </div>
               </div>
@@ -579,24 +574,21 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <Button
+                <button
                   onClick={onGoToPlanner}
-                  size="lg"
-                  className="gap-2 flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold shadow-lg shadow-amber-200/50"
+                  className="btn-primary gap-2 flex-1 h-11 text-sm rounded-xl inline-flex items-center justify-center"
                 >
                   <Sparkles className="w-4 h-4" />
                   Get Full AI Campaign Plan
                   <ArrowRight className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
+                </button>
+                <button
                   onClick={handleReset}
-                  size="lg"
-                  className="gap-2"
+                  className="btn-secondary gap-2 h-11 text-sm rounded-xl inline-flex items-center justify-center bg-transparent"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Start Over
-                </Button>
+                </button>
               </div>
             </div>
           </motion.div>
