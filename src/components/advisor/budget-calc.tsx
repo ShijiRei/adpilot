@@ -52,43 +52,6 @@ export default function BudgetCalculator({ selectedPlatform }: BudgetCalcProps) 
     };
   }, [monthlyBudget, avgCpc, benchmarks, audienceSize]);
 
-  const budgetPerClick = monthlyBudget / Math.max(estimates.estimatedClicks, 1);
-
-  const recommendations = useMemo(() => {
-    const recs: string[] = [];
-
-    if (monthlyBudget < 100) {
-      recs('Consider starting with at least $100/month for meaningful results across any platform.');
-    }
-    if (monthlyBudget >= 100 && monthlyBudget < 500) {
-      recs('Focus on 1-2 platforms maximum. Quality over quantity at this budget level.');
-    }
-    if (monthlyBudget >= 500 && monthlyBudget < 2000) {
-      recs('Good budget for testing. Allocate 70% to proven campaigns, 30% to experiments.');
-    }
-    if (monthlyBudget >= 2000) {
-      recs('At this level, consider multi-platform strategy with dedicated landing pages per campaign.');
-    }
-
-    if (campaignGoal === 'awareness') {
-      recs('For awareness campaigns, expect higher impressions but lower direct conversions. Measure brand lift surveys.');
-    }
-    if (campaignGoal === 'conversions') {
-      recs('Conversion campaigns require proper pixel/tag setup. Budget at least $300/month for reliable optimization.');
-    }
-    if (audienceSize < 10000) {
-      recs('Your target audience is quite small. Consider broadening targeting or using lookalike audiences.');
-    }
-
-    const dailyBudget = monthlyBudget / 30;
-    if (dailyBudget < parseFloat(platformData.minBudget.replace(/[^0-9.]/g, ''))) {
-      recs(`Warning: ${platformData.name} recommends a minimum of ${platformData.minBudget} for optimal results.`);
-    }
-
-    return recs;
-  }, [monthlyBudget, campaignGoal, audienceSize, platformData]);
-
-  // Fix: recs is not a function
   const recs = useMemo(() => {
     const result: string[] = [];
 
