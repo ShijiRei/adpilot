@@ -69,6 +69,8 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
   const [selectedBudget, setSelectedBudget] = useState('');
   const [selectedPains, setSelectedPains] = useState<string[]>([]);
 
+  const selectedGoals = campaignGoals as unknown as Record<string, (typeof campaignGoals)[CampaignGoal]>;
+
   const canGetInsights = selectedPlatforms.length > 0 && selectedGoal !== '' && selectedBudget !== '' && selectedPains.length > 0;
 
   const insights = useMemo<QuickInsights | null>(() => {
@@ -182,8 +184,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
     setSelectedBudget('');
     setSelectedPains([]);
   };
-
-  const selectedGoals = campaignGoals as unknown as Record<string, typeof campaignGoals[CampaignGoal]>;
 
   return (
     <div className="max-w-4xl mx-auto">
