@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 
-interface Message {
+export interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
@@ -17,6 +17,10 @@ interface Message {
 interface AIAdvisorProps {
   selectedPlatform?: string;
   campaignGoal?: string;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const quickPrompts = [
@@ -28,38 +32,24 @@ const quickPrompts = [
   "Best practices for retargeting campaigns across Meta and Google?",
 ];
 
-export default function AIAdvisor({ selectedPlatform, campaignGoal }: AIAdvisorProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome',
-      role: 'assistant',
-      content: `Hi! I'm **AdBot**, your personal ad campaign advisor. I can help you plan, optimize, and troubleshoot campaigns across all major platforms.
-
-${selectedPlatform ? `I see you're interested in **${selectedPlatform}**${campaignGoal ? ` for ${campaignGoal}` : ''}. ` : ''}
-
-**Ask me anything about:**
-- Setting up your first campaign
-- Platform selection and strategy
-- Budget planning and optimization
-- Targeting and audience strategies
-- Ad creative best practices
-- Common mistakes to avoid
-
-How can I help you today?`,
-    },
-  ]);
+export default function AIAdvisor({
+  selectedPlatform,
+  campaignGoal,
+  messages,
+  setMessages,
+  isLoading,
+  setIsLoading,
+}: AIAdvisorProps) {
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const el = scrollContainerRef.current;
     if (!el) return;
-    const viewport = el.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
-    if (viewport) {
-      viewport.scrollTop = viewport.scrollHeight;
-    }
+    requestAnimationFrame(() => {
+      el.scrollTop = el.scrollHeight;
+    });
   }, [messages, isLoading]);
 
   const handleSend = async (messageText?: string) => {
@@ -128,7 +118,6 @@ How can I help you today?`,
       <div
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto px-4"
-        data-radix-scroll-area-root
       >
         <div className="space-y-4 py-4 max-w-3xl mx-auto">
           {messages.map((msg) => (

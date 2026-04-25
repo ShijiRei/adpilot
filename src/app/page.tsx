@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { PlatformId } from '@/lib/ad-platforms';
-import AIAdvisor from '@/components/advisor/ai-advisor';
+import AIAdvisor, { Message } from '@/components/advisor/ai-advisor';
 import PlatformGuide from '@/components/advisor/platform-guide';
 import BudgetCalculator from '@/components/advisor/budget-calc';
 import AdCopyGenerator from '@/components/advisor/ad-copy';
@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import {
   MessageSquare, BookOpen, Calculator, Sparkles, Scale,
-  Menu, X, ChevronLeft, Zap, Target, TrendingUp,
+  Menu, X, Zap, Target, TrendingUp,
   Facebook, Search, Youtube, Linkedin, Pin
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -50,10 +50,32 @@ export default function Home() {
   const [selectedPlatform, setSelectedPlatform] = useState<PlatformId | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Chat state lives here so it persists across tab switches
+  const [chatMessages, setChatMessages] = useState<Message[]>([
+    {
+      id: 'welcome',
+      role: 'assistant',
+      content: `Hi! I'm **AdBot**, your personal ad campaign advisor. I can help you plan, optimize, and troubleshoot campaigns across all major platforms.
+
+**Ask me anything about:**
+- Setting up your first campaign
+- Platform selection and strategy
+- Budget planning and optimization
+- Targeting and audience strategies
+- Ad creative best practices
+- Common mistakes to avoid
+
+How can I help you today?`,
+    },
+  ]);
+  const [chatLoading, setChatLoading] = useState(false);
+
   const handlePlatformSelect = (id: PlatformId) => {
     setSelectedPlatform(id);
     setActiveTab('guide');
   };
+
+  const currentPlatformName = platformSidebarItems.find(p => p.id === selectedPlatform)?.name;
 
   return (
     <div className="min-h-screen bg-gray-50/50 flex">
@@ -188,9 +210,17 @@ export default function Home() {
               </h2>
               <p className="text-xs text-muted-foreground hidden sm:block">
                 {navItems.find((n) => n.id === activeTab)?.description}
-                {selectedPlatform && ` — ${platformSidebarItems.find(p => p.id === selectedPlatform)?.name}`}
+                {selectedPlatform && ` — ${currentPlatformName}`}
               </p>
             </div>
+
+            {/* Chat message count badge */}
+            {chatMessages.length > 1 && activeTab !== 'advisor' && (
+              <Badge variant="secondary" className="text-xs bg-amber-50 text-amber-700 border-amber-200 cursor-pointer" onClick={() => setActiveTab('advisor')}>
+                <MessageSquare className="w-3 h-3 mr-1" />
+                {chatMessages.length - 1} messages
+              </Badge>
+            )}
 
             {/* Quick Stats */}
             <div className="hidden md:flex items-center gap-3">
@@ -232,13 +262,17 @@ export default function Home() {
                     </div>
                     {selectedPlatform && (
                       <Badge variant="outline" className="ml-auto text-xs">
-                        {platformSidebarItems.find(p => p.id === selectedPlatform)?.name}
+                        {currentPlatformName}
                       </Badge>
                     )}
                   </div>
                   <AIAdvisor
-                    selectedPlatform={platformSidebarItems.find(p => p.id === selectedPlatform)?.name}
+                    selectedPlatform={currentPlatformName}
                     campaignGoal="conversions"
+                    messages={chatMessages}
+                    setMessages={setChatMessages}
+                    isLoading={chatLoading}
+                    setIsLoading={setChatLoading}
                   />
                 </div>
               )}
