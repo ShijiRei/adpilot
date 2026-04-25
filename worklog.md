@@ -94,3 +94,25 @@ Stage Summary:
 - Step indicator system in globals.css ready for reuse
 - Card hover lift effect (.card-interactive) for trust and polish
 - Build passed with no errors
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Optimize Quick Checkup for conversion — reduce friction, add impact metrics, pain points on results
+
+Work Log:
+- Reduced Quick Checkup from 4 questions to 3 (Platform, Objective, Budget). Removed Pain Points from the questions page.
+- Moved Pain Points to the results page as an optional refiner — users can tap to get personalized fixes without being blocked.
+- Added 3 prioritized action items ranked by impact (HIGH/MEDIUM/LOW) with estimated impact metrics per action.
+- Added impact metrics banner at top of results: Estimated Monthly Savings ($), ROAS Improvement (x), and Top Priority action.
+- Savings/ROAS estimates computed from budget range, platform, and goal data — not hardcoded.
+- "Full Plan" CTA section at bottom with compelling copy and prominent button linking to Guided Planner.
+- Updated hero page references: "4 questions" → "3 questions", "30 sec" → "15 sec".
+- Pain remedies appear dynamically via AnimatePresence when user selects pain points on results page.
+- Build passed with no errors.
+
+Stage Summary:
+- 3-question Quick Checkup (was 4) — less friction, faster conversion
+- Results page shows: Impact metrics banner (savings, ROAS boost, top priority), 3 ranked action items, budget check, platform benchmarks, goal metrics
+- Pain points moved to results page as optional interactive refiner
+- Strong "Full AI Campaign Plan" CTA at bottom of results

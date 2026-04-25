@@ -83,7 +83,7 @@ function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onCha
             className="btn-primary gap-2 px-8 h-12 text-sm rounded-xl inline-flex items-center"
           >
             <Wand2 className="w-5 h-5" />
-            Get Quick Insights — 30 sec
+            Get Quick Insights — 15 sec
             <ArrowRight className="w-4 h-4" />
           </button>
           <button
@@ -136,7 +136,7 @@ function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onCha
         <h2 className="text-section-title mb-5 text-center">6 tools. One mission: smarter ad spend.</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
-            { icon: <Target className="w-4 h-4" />, title: 'Quick Checkup', desc: '4 questions. Instant insights on budget, targeting &amp; fixes.' },
+            { icon: <Target className="w-4 h-4" />, title: 'Quick Checkup', desc: '3 questions. Instant results with action items &amp; savings estimate.' },
             { icon: <Wand2 className="w-4 h-4" />, title: 'Campaign Planner', desc: '5-step AI wizard — full plan tailored to your platform, budget &amp; country.' },
             { icon: <MessageSquare className="w-4 h-4" />, title: 'AI Advisor', desc: 'Ask anything. Get expert answers on targeting, bidding &amp; creative.' },
             { icon: <BookOpen className="w-4 h-4" />, title: 'Platform Guides', desc: 'Deep dives with tips, mistakes &amp; pre-launch checklists.' },
