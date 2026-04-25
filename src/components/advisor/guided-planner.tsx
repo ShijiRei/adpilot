@@ -15,9 +15,11 @@ import {
   ArrowRight, ArrowLeft, Check, Loader2, Sparkles,
   Target, DollarSign, Users, Wand2, ClipboardList,
   Facebook, Search, Youtube, Linkedin, Pin, RotateCcw,
-  FileText, ChevronRight, MapPin, Globe
+  FileText, ChevronRight, MapPin, Globe, ChevronsUpDown, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
@@ -35,6 +37,20 @@ const industries = [
   'Healthcare', 'Finance', 'Restaurants & Food', 'Fashion & Beauty',
   'Technology', 'Travel & Hospitality', 'Fitness & Wellness', 'Other',
 ];
+
+const countriesByRegion: Record<string, string[]> = {
+  'North America': ['United States', 'Canada', 'Mexico', 'Guatemala', 'Costa Rica', 'Panama', 'Cuba', 'Dominican Republic', 'Jamaica', 'Trinidad and Tobago'],
+  'South America': ['Brazil', 'Argentina', 'Colombia', 'Chile', 'Peru', 'Ecuador', 'Venezuela', 'Uruguay', 'Paraguay', 'Bolivia'],
+  'Europe': ['United Kingdom', 'Germany', 'France', 'Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 'Austria', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Poland', 'Czech Republic', 'Greece', 'Romania', 'Hungary', 'Ukraine', 'Iceland', 'Luxembourg', 'Slovakia', 'Bulgaria', 'Croatia', 'Serbia', 'Lithuania', 'Latvia', 'Estonia', 'Slovenia', 'Malta', 'Cyprus'],
+  'Middle East & North Africa': ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Kuwait', 'Bahrain', 'Oman', 'Egypt', 'Morocco', 'Tunisia', 'Algeria', 'Iraq', 'Jordan', 'Lebanon', 'Israel', 'Turkey', 'Iran', 'Palestine'],
+  'Sub-Saharan Africa': ['South Africa', 'Nigeria', 'Kenya', 'Ghana', 'Ethiopia', 'Tanzania', 'Uganda', 'Rwanda', 'Senegal', 'Cameroon', 'Ivory Coast', 'Democratic Republic of the Congo', 'Mozambique', 'Zimbabwe', 'Zambia', 'Madagascar'],
+  'Asia Pacific': ['China', 'Japan', 'South Korea', 'India', 'Indonesia', 'Philippines', 'Vietnam', 'Thailand', 'Malaysia', 'Singapore', 'Taiwan', 'Hong Kong', 'Pakistan', 'Bangladesh', 'Sri Lanka', 'Myanmar', 'Cambodia', 'Nepal', 'New Zealand'],
+  'Central Asia & Caucasus': ['Kazakhstan', 'Uzbekistan', 'Azerbaijan', 'Georgia', 'Armenia', 'Kyrgyzstan', 'Tajikistan', 'Turkmenistan', 'Mongolia'],
+  'Oceania': ['Australia', 'New Zealand', 'Fiji', 'Papua New Guinea'],
+  'Caribbean': ['Bahamas', 'Barbados', 'Haiti', 'Trinidad and Tobago', 'Jamaica', 'Dominican Republic', 'Puerto Rico'],
+};
+
+const allCountries = Object.values(countriesByRegion).flat();
 
 const tones = [
   { id: 'professional', label: 'Professional', emoji: '💼' },
@@ -73,7 +89,7 @@ export default function GuidedPlanner() {
       case 1: return selectedPlatforms.length > 0;
       case 2: return budget >= 50 && industry !== '';
       case 3: return goalId !== '';
-      case 4: return productDescription.trim().length > 0;
+      case 4: return productDescription.trim().length > 0 && location.trim().length > 0;
       case 5: return true;
       default: return false;
     }
@@ -245,7 +261,8 @@ export default function GuidedPlanner() {
             <Step4
               productDescription={productDescription}
               setProductDescription={setProductDescription}
-              targetAudience={setTargetAudience}
+              targetAudience={targetAudience}
+              setTargetAudience={setTargetAudience}
               location={location}
               setLocation={setLocation}
               tone={tone}
@@ -544,17 +561,21 @@ function Step3({
 /* ───── Step 4: Final Details ───── */
 function Step4({
   productDescription, setProductDescription,
-  targetAudience, location, setLocation,
+  targetAudience, setTargetAudience,
+  location, setLocation,
   tone, setTone,
 }: {
   productDescription: string;
   setProductDescription: (v: string) => void;
-  targetAudience: (v: string) => void;
+  targetAudience: string;
+  setTargetAudience: (v: string) => void;
   location: string;
   setLocation: (v: string) => void;
   tone: string;
   setTone: (v: string) => void;
 }) {
+  const [countryOpen, setCountryOpen] = useState(false);
+
   return (
     <Card>
       <CardHeader>
@@ -582,49 +603,88 @@ function Step4({
           </p>
         </div>
 
-        {/* Location Section */}
+        {/* Country Selector */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-amber-500" />
-            Campaign Location
+            Target Country <span className="text-muted-foreground font-normal">*</span>
           </Label>
           <p className="text-xs text-muted-foreground -mt-1">
-            Where should your ads be shown? This affects costs, audience availability, and creative strategy.
+            Where should your ads be shown? This affects costs, audience size, and creative strategy.
           </p>
 
-          {/* Quick location presets */}
-          <div className="flex flex-wrap gap-2 mb-2">
-            {[
-              { label: 'United States', value: 'United States' },
-              { label: 'United Kingdom', value: 'United Kingdom' },
-              { label: 'Canada', value: 'Canada' },
-              { label: 'Australia', value: 'Australia' },
-              { label: 'Europe', value: 'Europe' },
-              { label: 'Middle East', value: 'Middle East (GCC)' },
-              { label: 'Global', value: 'Global (worldwide)' },
-            ].map((loc) => (
+          <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+            <PopoverTrigger asChild>
               <button
-                key={loc.value}
-                onClick={() => setLocation(loc.value)}
+                role="combobox"
+                aria-expanded={countryOpen}
                 className={cn(
-                  'px-3 py-1.5 rounded-lg border text-xs font-medium transition-all',
-                  location === loc.value
-                    ? 'border-amber-400 bg-amber-50 text-amber-700'
-                    : 'border-border hover:border-amber-200 text-muted-foreground hover:text-foreground'
+                  'flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm transition-colors',
+                  'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                  location
+                    ? 'border-amber-300 bg-amber-50/50'
+                    : 'border-input bg-background hover:border-amber-200'
                 )}
               >
-                {loc.label}
+                <div className="flex items-center gap-2 truncate">
+                  {location ? (
+                    <>
+                      <Globe className="w-4 h-4 text-amber-500 shrink-0" />
+                      <span className="truncate">{location}</span>
+                    </>
+                  ) : (
+                    <>
+                      <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground">Search and select a country...</span>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  {location && (
+                    <X
+                      className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLocation('');
+                      }}
+                    />
+                  )}
+                  <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />
+                </div>
               </button>
-            ))}
-          </div>
-
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Or type a specific location (e.g., New York City, Germany, North Africa...)"
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          />
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Search countries..." />
+                <CommandList>
+                  <CommandEmpty>No country found.</CommandEmpty>
+                  {Object.entries(countriesByRegion).map(([region, countries]) => (
+                    <CommandGroup key={region} heading={region}>
+                      {countries.map((country) => (
+                        <CommandItem
+                          key={country}
+                          value={country}
+                          onSelect={() => {
+                            setLocation(country);
+                            setCountryOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              'mr-2 h-4 w-4 shrink-0',
+                              location === country ? 'opacity-100 text-amber-500' : 'opacity-0'
+                            )}
+                          />
+                          <Globe className="w-3.5 h-3.5 text-muted-foreground mr-1.5 shrink-0" />
+                          {country}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  ))}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
           {location && (
             <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg">
@@ -638,8 +698,9 @@ function Step4({
           <Label htmlFor="audience">Target Audience <span className="text-muted-foreground font-normal">(optional)</span></Label>
           <Textarea
             id="audience"
-            onChange={(e) => targetAudience(e.target.value)}
-            placeholder="Who are you trying to reach? (e.g., women 25-34 interested in fitness, small business owners in the US...)"
+            value={targetAudience}
+            onChange={(e) => setTargetAudience(e.target.value)}
+            placeholder="Who are you trying to reach? (e.g., women 25-34 interested in fitness, small business owners...)"
             rows={3}
             className="resize-none"
           />

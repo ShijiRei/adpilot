@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
       goalName,
       productDescription,
       targetAudience,
+      location,
       tone,
     } = body;
 
@@ -23,6 +24,10 @@ export async function POST(req: NextRequest) {
 
     if (!budget || budget < 50) {
       return NextResponse.json({ error: 'Budget must be at least $50.' }, { status: 400 });
+    }
+
+    if (!location || location.trim().length === 0) {
+      return NextResponse.json({ error: 'Please select a target country.' }, { status: 400 });
     }
 
     const platformList = Array.isArray(platforms) ? platforms.join(', ') : String(platforms);

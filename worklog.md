@@ -24,3 +24,25 @@ Stage Summary:
 - Interactive pre-launch checklists per platform
 - Mobile responsive with collapsible sidebar
 - All lint checks passing, dev server running successfully
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Add searchable country selector to Campaign Planner's Final Details step
+
+Work Log:
+- Read current guided-planner.tsx and api/plan/route.ts to understand structure
+- Discovered and fixed critical bug: `location` was NOT destructured from API request body (was falling through to `window.location` global)
+- Discovered and fixed bug: `targetAudience` prop was passing setter instead of value to Step4 component
+- Added comprehensive country list (~130 countries) grouped by 10 regions (North America, South America, Europe, Middle East & North Africa, Sub-Saharan Africa, Asia Pacific, Central Asia & Caucasus, Oceania, Caribbean)
+- Replaced the old preset buttons + text input with a searchable country combobox using Popover + Command (cmdk)
+- Country selector features: search filtering, region grouping, checkmark for selected country, clear button (X), globe icon
+- Made country a required field (* badge) and updated canProceed() validation to require it
+- Added server-side validation for location in the API route
+- Build passed with no errors
+
+Stage Summary:
+- Searchable country dropdown with ~130 countries organized by region
+- Location now properly flows from UI → API → AI prompt
+- Fixed two bugs (location destructuring, targetAudience prop)
+- Country is now a required step before generating the plan
