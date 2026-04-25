@@ -8,18 +8,19 @@ import PlatformGuide from '@/components/advisor/platform-guide';
 import BudgetCalculator from '@/components/advisor/budget-calc';
 import AdCopyGenerator from '@/components/advisor/ad-copy';
 import PlatformComparison from '@/components/advisor/comparison';
+import GuidedPlanner from '@/components/advisor/guided-planner';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import {
-  MessageSquare, BookOpen, Calculator, Sparkles, Scale,
+  MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
   Menu, X, Zap, Target, TrendingUp,
   Facebook, Search, Youtube, Linkedin, Pin
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type TabId = 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
+type TabId = 'planner' | 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
 
 interface NavItem {
   id: TabId;
@@ -29,6 +30,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { id: 'planner', label: 'Campaign Planner', icon: <Wand2 className="w-4 h-4" />, description: 'Step-by-step guided campaign builder' },
   { id: 'advisor', label: 'AI Advisor', icon: <MessageSquare className="w-4 h-4" />, description: 'Chat with AI for campaign tips' },
   { id: 'guide', label: 'Platform Guide', icon: <BookOpen className="w-4 h-4" />, description: 'Detailed platform guides & tips' },
   { id: 'budget', label: 'Budget Calculator', icon: <Calculator className="w-4 h-4" />, description: 'Estimate costs and performance' },
@@ -46,7 +48,7 @@ const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNod
 ];
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabId>('advisor');
+  const [activeTab, setActiveTab] = useState<TabId>('planner');
   const [selectedPlatform, setSelectedPlatform] = useState<PlatformId | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -246,6 +248,10 @@ How can I help you today?`,
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
+              {activeTab === 'planner' && (
+                <GuidedPlanner />
+              )}
+
               {activeTab === 'advisor' && (
                 <div className="h-[calc(100vh-8rem)] flex flex-col bg-white rounded-2xl border shadow-sm">
                   {/* AI Advisor Header */}
