@@ -60,7 +60,7 @@ export const platforms: Record<PlatformId, PlatformInfo> = {
       'Powerful retargeting capabilities',
       'Robust analytics and reporting tools',
       'Large variety of ad formats',
-      '成熟的机器学习算法自动优化',
+      'Mature machine learning algorithms for automatic optimization',
     ],
     cons: [
       'Rising costs in competitive industries',
