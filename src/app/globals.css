@@ -120,3 +120,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Markdown inside chat messages */
+.msg-markdown p:first-child {
+  margin-top: 0;
+}
+.msg-markdown p:last-child {
+  margin-bottom: 0;
+}
+.msg-markdown p {
+  line-height: 1.6;
+}
+.msg-markdown ul,
+.msg-markdown ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+.msg-markdown li {
+  line-height: 1.5;
+}

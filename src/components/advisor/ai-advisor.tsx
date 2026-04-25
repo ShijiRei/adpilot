@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   id: string;
@@ -50,14 +50,17 @@ How can I help you today?`,
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const viewport = el.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+    if (viewport) {
+      viewport.scrollTop = viewport.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const handleSend = async (messageText?: string) => {
     const text = messageText || input.trim();
@@ -119,39 +122,14 @@ How can I help you today?`,
     }
   };
 
-  const renderMessageContent = (content: string) => {
-    // Simple markdown-like rendering
-    const parts = content.split(/(\*\*[^*]+\*\*|\*[^*]+\*|#{1,3}\s[^\n]+)/g);
-    return parts.map((part, i) => {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={i}>{part.slice(2, -2)}</strong>;
-      }
-      if (part.startsWith('*') && part.endsWith('*')) {
-        return <em key={i}>{part.slice(1, -1)}</em>;
-      }
-      // Handle line breaks and bullet points
-      const lines = part.split('\n');
-      return (
-        <span key={i}>
-          {lines.map((line, j) => (
-            <span key={j}>
-              {line.startsWith('- ') ? (
-                <span className="block ml-4 before:content-['•'] before:mr-2">{line.slice(2)}</span>
-              ) : (
-                line
-              )}
-              {j < lines.length - 1 && <br />}
-            </span>
-          ))}
-        </span>
-      );
-    });
-  };
-
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Messages Area */}
-      <ScrollArea className="flex-1 px-4" ref={scrollRef}>
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto px-4"
+        data-radix-scroll-area-root
+      >
         <div className="space-y-4 py-4 max-w-3xl mx-auto">
           {messages.map((msg) => (
             <div
@@ -162,29 +140,49 @@ How can I help you today?`,
               )}
             >
               {msg.role === 'assistant' && (
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mt-1">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
               )}
               <div
                 className={cn(
-                  'max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed',
+                  'max-w-[80%] rounded-2xl px-4 py-3 text-sm',
                   msg.role === 'user'
                     ? 'bg-primary text-primary-foreground rounded-br-md'
                     : 'bg-muted rounded-bl-md'
                 )}
               >
-                {renderMessageContent(msg.content)}
+                <div className="msg-markdown">
+                  <ReactMarkdown
+                    components={{
+                      p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                      strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                      em: ({ children }) => <em>{children}</em>,
+                      ul: ({ children }) => <ul className="list-disc ml-5 mb-2 space-y-1">{children}</ul>,
+                      ol: ({ children }) => <ol className="list-decimal ml-5 mb-2 space-y-1">{children}</ol>,
+                      li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                      h1: ({ children }) => <h1 className="text-base font-bold mb-2">{children}</h1>,
+                      h2: ({ children }) => <h2 className="text-sm font-bold mb-1.5">{children}</h2>,
+                      h3: ({ children }) => <h3 className="text-sm font-semibold mb-1">{children}</h3>,
+                      a: ({ children, href }) => <a href={href} className="underline text-amber-600 hover:text-amber-800">{children}</a>,
+                      code: ({ children }) => <code className="bg-muted-foreground/10 px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>,
+                      pre: ({ children }) => <pre className="bg-muted p-3 rounded-lg overflow-x-auto my-2">{children}</pre>,
+                      blockquote: ({ children }) => <blockquote className="border-l-2 border-amber-300 pl-3 italic my-2">{children}</blockquote>,
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
               </div>
               {msg.role === 'user' && (
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center mt-1">
                   <User className="w-4 h-4 text-primary-foreground" />
                 </div>
               )}
             </div>
           ))}
           {isLoading && (
-            <div className="flex gap-3">
+            <div className="flex gap-3 justify-start">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                 <Bot className="w-4 h-4 text-white" />
               </div>
@@ -194,11 +192,11 @@ How can I help you today?`,
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Quick Prompts */}
       {messages.length === 1 && (
-        <div className="px-4 pb-2 max-w-3xl mx-auto">
+        <div className="px-4 pb-2 max-w-3xl mx-auto flex-shrink-0">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-amber-500" />
             <span className="text-xs font-medium text-muted-foreground">Quick questions</span>
@@ -208,7 +206,7 @@ How can I help you today?`,
               <Badge
                 key={prompt}
                 variant="secondary"
-                className="cursor-pointer hover:bg-amber-100 hover:text-amber-800 transition-colors text-xs font-normal py-1.5 px-3 max-w-full"
+                className="cursor-pointer hover:bg-amber-100 hover:text-amber-800 transition-colors text-xs font-normal py-1.5 px-3"
                 onClick={() => handleSend(prompt)}
               >
                 {prompt.length > 60 ? prompt.slice(0, 60) + '...' : prompt}
@@ -219,7 +217,7 @@ How can I help you today?`,
       )}
 
       {/* Input Area */}
-      <div className="border-t bg-background p-4">
+      <div className="border-t bg-background p-4 flex-shrink-0">
         <div className="flex gap-2 max-w-3xl mx-auto">
           <Textarea
             ref={textareaRef}
