@@ -15,12 +15,12 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import {
   MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
-  Menu, X, Zap, Target, TrendingUp,
+  Menu, X, Zap, Target, TrendingUp, ArrowRight, CheckCircle2, Shield, Clock,
   Facebook, Search, Youtube, Linkedin, Pin
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type TabId = 'planner' | 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
+type TabId = 'home' | 'planner' | 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
 
 interface NavItem {
   id: TabId;
@@ -30,6 +30,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { id: 'home', label: 'Home', icon: <Zap className="w-4 h-4" />, description: 'AI ad campaign advisor for smarter spending' },
   { id: 'planner', label: 'Campaign Planner', icon: <Wand2 className="w-4 h-4" />, description: 'Step-by-step guided campaign builder' },
   { id: 'advisor', label: 'AI Advisor', icon: <MessageSquare className="w-4 h-4" />, description: 'Chat with AI for campaign tips' },
   { id: 'guide', label: 'Platform Guide', icon: <BookOpen className="w-4 h-4" />, description: 'Detailed platform guides & tips' },
@@ -47,8 +48,156 @@ const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNod
   { id: 'pinterest', name: 'Pinterest Ads', icon: <Pin className="w-4 h-4" /> },
 ];
 
+/* ───── Hero / Landing Section ───── */
+function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onChat: () => void }) {
+  return (
+    <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Value Prop — The One-Liner */}
+      <div className="text-center pt-8 sm:pt-12">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-sm font-medium mb-6">
+          <Zap className="w-4 h-4" />
+          AI-Powered Ad Campaign Advisor
+        </div>
+
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight mb-4">
+          Stop wasting ad spend. Get a{' '}
+          <span className="bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
+            5-minute AI campaign plan
+          </span>{' '}
+          with clear fixes to{' '}
+          <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+            boost ROAS
+          </span>{' '}
+          and{' '}
+          <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+            lower CPA
+          </span>.
+        </h1>
+
+        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          For founders, ecommerce brands, and marketers — plan, optimize, and troubleshoot ad campaigns across Meta, TikTok, Google, YouTube, LinkedIn &amp; Pinterest.
+        </p>
+
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
+          <Button
+            size="lg"
+            onClick={onGetStarted}
+            className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 h-12 text-base font-semibold shadow-lg shadow-amber-200/50"
+          >
+            <Wand2 className="w-5 h-5" />
+            Build Your Campaign Plan
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={onChat}
+            className="gap-2 h-12 px-8 text-base border-2 hover:bg-muted/50"
+          >
+            <MessageSquare className="w-5 h-5" />
+            Chat with AI Advisor
+          </Button>
+        </div>
+
+        {/* Trust Signals — Platform Logos */}
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mb-10">
+          {platformSidebarItems.map((p) => (
+            <div key={p.id} className="flex items-center gap-1.5 text-muted-foreground/60 text-sm">
+              {p.icon}
+              <span className="hidden sm:inline text-xs font-medium">{p.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 3 Outcome Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <OutcomeCard
+          icon={<TrendingUp className="w-6 h-6" />}
+          title="Lower Your CPA"
+          description="Get platform-specific budget allocation and bidding strategies that cut cost-per-acquisition by targeting the right audience segments from day one."
+          gradient="from-emerald-50 to-teal-50"
+          iconBg="bg-emerald-100 text-emerald-600"
+        />
+        <OutcomeCard
+          icon={<Shield className="w-6 h-6" />}
+          title="Boost ROAS"
+          description="AI-generated campaign plans with creative strategies, ad formats, and optimization playbooks tailored to maximize your return on every dollar spent."
+          gradient="from-amber-50 to-orange-50"
+          iconBg="bg-amber-100 text-amber-600"
+        />
+        <OutcomeCard
+          icon={<Clock className="w-6 h-6" />}
+          title="Save Hours"
+          description="Skip the guesswork and research. Get a complete, actionable plan in 5 minutes — targeting, timeline, budget split, creative ideas, and optimization steps."
+          gradient="from-blue-50 to-indigo-50"
+          iconBg="bg-blue-100 text-blue-600"
+        />
+      </div>
+
+      {/* What You Get — Feature Grid */}
+      <div className="bg-white rounded-2xl border p-6 sm:p-8">
+        <h2 className="text-xl font-bold mb-6 text-center">Everything you need to launch smarter campaigns</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { icon: <Wand2 className="w-5 h-5" />, title: 'Guided Campaign Planner', desc: '5-step wizard that builds a full AI campaign plan tailored to your platform, budget, industry, and country.' },
+            { icon: <MessageSquare className="w-5 h-5" />, title: 'AI Campaign Advisor', desc: 'Chat with AI about targeting, bidding, creative strategy, and troubleshooting — get instant expert answers.' },
+            { icon: <BookOpen className="w-5 h-5" />, title: 'Platform Deep Dives', desc: 'Detailed guides for Meta, TikTok, Google, YouTube, LinkedIn & Pinterest — tips, mistakes, and checklists.' },
+            { icon: <Calculator className="w-5 h-5" />, title: 'Budget Calculator', desc: 'Estimate CPC, CTR, and expected results per platform. See how far your budget goes before spending a cent.' },
+            { icon: <Sparkles className="w-5 h-5" />, title: 'Ad Copy Generator', desc: 'Generate headlines, body copy, and CTAs in multiple tones — professional, casual, bold, or inspirational.' },
+            { icon: <Scale className="w-5 h-5" />, title: 'Platform Comparison', desc: 'Side-by-side comparison of costs, audience sizes, strengths, and weaknesses to pick the right platform.' },
+          ].map((f) => (
+            <div key={f.title} className="flex items-start gap-3 p-3 rounded-xl hover:bg-muted/30 transition-colors">
+              <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                {f.icon}
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm mb-0.5">{f.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Trust Signals */}
+      <div className="text-center pb-8">
+        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+          Free to use
+          <span className="mx-1">·</span>
+          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+          No sign-up required
+          <span className="mx-1">·</span>
+          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+          Results in under 5 minutes
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OutcomeCard({ icon, title, description, gradient, iconBg }: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  gradient: string;
+  iconBg: string;
+}) {
+  return (
+    <div className={cn('p-5 rounded-2xl border bg-gradient-to-br', gradient)}>
+      <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center mb-3', iconBg)}>
+        {icon}
+      </div>
+      <h3 className="font-bold text-base mb-1">{title}</h3>
+      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+    </div>
+  );
+}
+
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabId>('planner');
+  const [activeTab, setActiveTab] = useState<TabId>('home');
   const [selectedPlatform, setSelectedPlatform] = useState<PlatformId | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -248,6 +397,10 @@ How can I help you today?`,
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
+              {activeTab === 'home' && (
+                <HeroSection onGetStarted={() => setActiveTab('planner')} onChat={() => setActiveTab('advisor')} />
+              )}
+
               {activeTab === 'planner' && (
                 <GuidedPlanner />
               )}

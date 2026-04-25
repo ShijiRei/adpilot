@@ -14,16 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AdPilot — AI-Powered Ad Campaign Advisor",
-  description: "Plan, optimize, and launch successful ad campaigns across Meta, TikTok, Google, YouTube, LinkedIn, and Pinterest with AI-powered guidance.",
-  keywords: ["ad campaigns", "digital advertising", "Meta Ads", "TikTok Ads", "Google Ads", "campaign optimization", "ad copy generator", "budget calculator"],
+  title: "AdPilot — Stop Wasting Ad Spend. Get AI Campaign Plans in 5 Minutes.",
+  description: "For founders, ecommerce brands, and marketers — get AI-powered ad campaign plans with clear fixes to lower CPA and boost ROAS across Meta, TikTok, Google, YouTube, LinkedIn & Pinterest.",
+  keywords: ["ad campaigns", "lower CPA", "boost ROAS", "ad audit", "Meta Ads", "TikTok Ads", "Google Ads", "campaign optimization", "digital advertising", "ad spend", "ecommerce marketing"],
   authors: [{ name: "AdPilot" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   openGraph: {
-    title: "AdPilot — AI-Powered Ad Campaign Advisor",
-    description: "Plan, optimize, and launch successful ad campaigns with AI guidance.",
+    title: "AdPilot — Stop Wasting Ad Spend. Get AI Campaign Plans in 5 Minutes.",
+    description: "For founders & marketers — get AI-powered campaign plans with clear fixes to lower CPA and boost ROAS.",
     type: "website",
   },
 };
