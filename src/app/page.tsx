@@ -10,13 +10,14 @@ import AdCopyGenerator from '@/components/advisor/ad-copy';
 import PlatformComparison from '@/components/advisor/comparison';
 import GuidedPlanner from '@/components/advisor/guided-planner';
 import QuickStart from '@/components/advisor/quick-start';
+import SampleReportDialog from '@/components/sample-report-dialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import {
   MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
-  Menu, X, Zap, Target, TrendingUp, ArrowRight, CheckCircle2, Shield, Clock,
+  Menu, X, Zap, Target, TrendingUp, ArrowRight, CheckCircle2, Shield, Clock, Eye,
   Facebook, Search, Youtube, Linkedin, Pin
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -77,22 +78,30 @@ function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onCha
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
-          <button
-            onClick={onGetStarted}
-            className="btn-primary gap-2 px-8 h-12 text-sm rounded-xl inline-flex items-center"
-          >
-            <Wand2 className="w-5 h-5" />
-            Get Quick Insights — 15 sec
-            <ArrowRight className="w-4 h-4" />
-          </button>
-          <button
-            onClick={onChat}
-            className="btn-secondary gap-2 px-8 h-12 text-sm rounded-xl inline-flex items-center bg-transparent"
-          >
-            <MessageSquare className="w-4 h-4" />
-            Chat with AI
-          </button>
+        <div className="flex flex-col items-center justify-center gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <button
+              onClick={onGetStarted}
+              className="btn-primary gap-2 px-8 h-12 text-sm rounded-xl inline-flex items-center"
+            >
+              <Wand2 className="w-5 h-5" />
+              Get Quick Insights — 15 sec
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onChat}
+              className="btn-secondary gap-2 px-8 h-12 text-sm rounded-xl inline-flex items-center bg-transparent"
+            >
+              <MessageSquare className="w-4 h-4" />
+              Chat with AI
+            </button>
+          </div>
+          <SampleReportDialog>
+            <button className="gap-1.5 text-xs font-medium text-amber-700 hover:text-amber-800 transition-colors inline-flex items-center">
+              <Eye className="w-3.5 h-3.5" />
+              See a sample report first
+            </button>
+          </SampleReportDialog>
         </div>
 
         {/* Platform Logos */}

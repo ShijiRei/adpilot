@@ -116,3 +116,26 @@ Stage Summary:
 - Results page shows: Impact metrics banner (savings, ROAS boost, top priority), 3 ranked action items, budget check, platform benchmarks, goal metrics
 - Pain points moved to results page as optional interactive refiner
 - Strong "Full AI Campaign Plan" CTA at bottom of results
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Add "See a sample report" preview to reduce black-box anxiety
+
+Work Log:
+- Created shared SampleReportDialog component (src/components/sample-report-dialog.tsx) with SampleReportContent sub-component
+- Sample report shows realistic mockup data: Meta Ads, Conversions, $2,000–$10,000/mo
+- 3 impact metric cards: Est. Savings ($500–$2,800/mo), ROAS Boost (2x–3x), Top Fix (Install Pixel)
+- 3 interactive action items with checkboxes: HIGH (Install Meta Pixel), MEDIUM (Test UGC creatives), LOW (Optimize weekly)
+- Checkboxes are interactive: checking an item strikes through title, grays description, turns card green
+- Animated progress bar shows completion percentage as items are checked
+- "This is a sample report. Yours will be personalized to your inputs." note at bottom
+- Added "See sample" button next to CTA on Quick Checkup page (amber outline button)
+- Added "See a sample report first" text link below hero CTAs on home page
+- Both open the same shared SampleReportDialog via radix Dialog
+- Build passed with no errors.
+
+Stage Summary:
+- Users can preview the report format before committing — eliminates black-box anxiety
+- Interactive checkboxes let users experience the report hands-on
+- Shared component reusable across hero and quick checkup CTAs

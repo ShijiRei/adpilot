@@ -4,9 +4,10 @@ import { useState, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { PlatformId, platforms, campaignGoals, CampaignGoal } from '@/lib/ad-platforms';
+import SampleReportDialog from '@/components/sample-report-dialog';
 import {
-  ArrowRight, ArrowLeft, Check, Sparkles, Target, DollarSign,
-  AlertTriangle, Zap, TrendingUp, BarChart3, Lightbulb, ChevronRight,
+  ArrowRight, Check, Sparkles, Target, DollarSign,
+  AlertTriangle, Zap, TrendingUp, BarChart3, Lightbulb,
   Facebook, Search, Youtube, Linkedin, Pin, RotateCcw,
   CheckCircle2, XCircle, Clock, Shield, Eye, MousePointerClick,
   UserPlus, Smartphone, Flame, PiggyBank, Rocket, Star,
@@ -69,6 +70,7 @@ interface QuickInsights {
   painRemedies: { pain: string; fix: string }[];
 }
 
+/* ───── Main Quick Checkup Component ───── */
 export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner: () => void; onDismiss: () => void }) {
   const [step, setStep] = useState<QuickStep>('details');
   const [selectedPlatforms, setSelectedPlatforms] = useState<PlatformId[]>([]);
@@ -78,7 +80,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
 
   const selectedGoals = campaignGoals as unknown as Record<string, (typeof campaignGoals)[CampaignGoal]>;
 
-  // Only 3 questions needed now — pain points are optional on results page
   const canGetInsights = selectedPlatforms.length > 0 && selectedGoal !== '' && selectedBudget !== '';
 
   const insights = useMemo<QuickInsights | null>(() => {
@@ -95,7 +96,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
       return match ? parseFloat(match[0]) : 5;
     }));
 
-    // Platform summary
     const platformSummary = selectedPlatformData.map(p => ({
       name: p.name,
       avgCPC: p.avgCPC,
@@ -104,10 +104,8 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
       minBudget: p.minBudget,
     }));
 
-    // Goal metrics
     const goalMetrics = goalData.keyMetrics;
 
-    // Budget assessment
     let budgetStatus: 'low' | 'moderate' | 'strong';
     let budgetMessage: string;
     let budgetRecommendation: string;
@@ -126,7 +124,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
       budgetRecommendation = 'Allocate 60% to winners, 30% to new tests, 10% to experiments.';
     }
 
-    // Estimated savings & ROAS boost (based on budget + platform + goal)
     const monthlyBudget = budgetMid;
     let estimatedSavings: string;
     let estimatedROASBoost: string;
@@ -145,10 +142,8 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
       estimatedROASBoost = '3x–5x';
     }
 
-    // Generate 3 prioritized action items based on platform + goal + budget
     const actionItems: ActionItem[] = [];
 
-    // HIGH IMPACT: Always first — Fix the biggest waste
     if (budgetStatus === 'low') {
       actionItems.push({
         title: 'Consolidate your budget',
@@ -175,7 +170,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
       });
     }
 
-    // MEDIUM IMPACT: Creative / targeting
     const creativeTip = selectedPlatformData[0]?.tips?.[2] || 'Test 5+ ad creatives per campaign to find winners';
     actionItems.push({
       title: 'Fix your creative strategy',
@@ -185,7 +179,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
       icon: <Lightbulb className="w-5 h-5" />,
     });
 
-    // LOW IMPACT: Optimization cadence
     const goalName = goalData.name;
     const relevantMetrics = goalData.keyMetrics.slice(0, 2).join(' and ');
     actionItems.push({
@@ -196,7 +189,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
       icon: <TrendingUp className="w-5 h-5" />,
     });
 
-    // Pain remedies (computed from optional selections on results page)
     const painRemedies = selectedPains.map(painId => {
       const pain = painPoints.find(p => p.id === painId)!;
       switch (painId) {
@@ -408,20 +400,32 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
                 </div>
               </section>
 
-              {/* CTA */}
-              <div className="flex flex-col sm:flex-row items-center justify-between pt-2 pb-6 gap-3">
-                <button onClick={onDismiss} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              {/* CTA + Sample Report */}
+              <div className="flex flex-col items-center pt-2 pb-6 gap-3">
+                {/* Back link */}
+                <button onClick={onDismiss} className="text-xs text-muted-foreground hover:text-foreground transition-colors self-start">
                   &larr; Back to home
                 </button>
-                <button
-                  onClick={handleGetInsights}
-                  disabled={!canGetInsights}
-                  className="btn-primary gap-2 px-8 h-11 text-sm rounded-xl inline-flex items-center disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  Get My Quick Insights
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+
+                {/* CTA + Sample side by side */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleGetInsights}
+                    disabled={!canGetInsights}
+                    className="btn-primary gap-2 px-8 h-11 text-sm rounded-xl inline-flex items-center disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Get My Quick Insights
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+
+                  <SampleReportDialog>
+                    <button className="gap-1.5 px-3 h-11 text-xs font-medium rounded-xl inline-flex items-center border border-amber-200 bg-amber-50/50 text-amber-700 hover:bg-amber-100 transition-colors">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">See sample</span>
+                    </button>
+                  </SampleReportDialog>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -626,7 +630,6 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
                 })}
               </div>
 
-              {/* Dynamic pain remedies — shown only when pains are selected */}
               <AnimatePresence>
                 {insights.painRemedies.length > 0 && (
                   <motion.div
