@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { PlatformId, platforms, campaignGoals, CampaignGoal } from '@/lib/ad-platforms';
+import { generateInsights, BudgetId } from '@/lib/insights-engine';
+import type { QuickInsights, InsightItem } from '@/lib/insights-engine';
 import SampleReportDialog from '@/components/sample-report-dialog';
 import {
   ArrowRight, Check, Sparkles, Target, DollarSign,
@@ -11,6 +13,7 @@ import {
   Facebook, Search, Youtube, Linkedin, Pin, RotateCcw,
   CheckCircle2, XCircle, Clock, Shield, Eye, MousePointerClick,
   UserPlus, Smartphone, Flame, PiggyBank, Rocket, Star,
+  Circle, ListChecks,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -52,22 +55,138 @@ const painPoints = [
   { id: 'no_strategy', label: 'No strategy', icon: <BarChart3 className="w-3.5 h-3.5" />, color: 'text-purple-500' },
 ];
 
-interface ActionItem {
-  title: string;
-  description: string;
-  impact: 'high' | 'medium' | 'low';
-  estimatedImpact: string;
-  icon: React.ReactNode;
+/* ───── Action Step Checkbox ───── */
+function StepCheckbox({
+  step,
+  checked,
+  onToggle,
+}: {
+  step: string;
+  checked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      className="flex items-start gap-2 w-full text-left group py-0.5"
+    >
+      <span className="mt-px shrink-0">
+        {checked ? (
+          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+        ) : (
+          <Circle className="w-4 h-4 text-gray-300 group-hover:text-amber-400 transition-colors" />
+        )}
+      </span>
+      <span className={cn(
+        'text-[11px] leading-relaxed transition-all',
+        checked ? 'text-gray-400 line-through' : 'text-gray-600',
+      )}>
+        {step}
+      </span>
+    </button>
+  );
 }
 
-interface QuickInsights {
-  actionItems: ActionItem[];
-  budgetAssessment: { status: 'low' | 'moderate' | 'strong'; message: string; recommendation: string };
-  estimatedSavings: string;
-  estimatedROASBoost: string;
-  platformSummary: { name: string; avgCPC: string; avgCPM: string; audienceSize: string; minBudget: string }[];
-  goalMetrics: string[];
-  painRemedies: { pain: string; fix: string }[];
+/* ───── Action Item Card with Steps ───── */
+function ActionItemCard({
+  item,
+  index,
+  checkedSteps,
+  onToggleStep,
+}: {
+  item: InsightItem;
+  index: number;
+  checkedSteps: Set<string>;
+  onToggleStep: (stepKey: string) => void;
+}) {
+  const totalSteps = item.actionSteps.length;
+  const completedSteps = item.actionSteps.filter(s => checkedSteps.has(`${index}-${s}`)).length;
+  const allDone = completedSteps === totalSteps;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.12 }}
+      className={cn(
+        'p-4 rounded-xl border-2 transition-all',
+        item.impact === 'high' && 'border-amber-300 bg-amber-50/50',
+        item.impact === 'medium' && 'border-blue-200 bg-blue-50/50',
+        item.impact === 'low' && 'border-muted bg-muted/30',
+        allDone && 'border-emerald-300 bg-emerald-50/30',
+      )}
+    >
+      {/* Top row: platform badge + rank + impact */}
+      <div className="flex items-center gap-2 mb-2">
+        <Badge variant="outline" className="text-[9px] font-semibold bg-white border-gray-200 text-gray-500 shrink-0">
+          {item.platformContext}
+        </Badge>
+        <span className="text-xs font-bold text-gray-400">#{index + 1}</span>
+        <Badge variant="secondary" className={cn('text-[9px] border-0 font-semibold ml-auto',
+          item.impact === 'high' && 'bg-amber-100 text-amber-700',
+          item.impact === 'medium' && 'bg-blue-100 text-blue-700',
+          item.impact === 'low' && 'bg-gray-100 text-gray-500',
+        )}>
+          {item.impact.toUpperCase()} IMPACT
+        </Badge>
+      </div>
+
+      {/* Title + Description */}
+      <h4 className={cn('text-sm font-bold mb-1', allDone && 'line-through text-gray-400')}>
+        {item.title}
+      </h4>
+      <p className={cn(
+        'text-xs text-muted-foreground leading-relaxed mb-3',
+        allDone && 'text-gray-400',
+      )}>
+        {item.description}
+      </p>
+
+      {/* Action Steps — interactive checklist */}
+      {totalSteps > 0 && (
+        <div className="mb-3 pl-1">
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <ListChecks className="w-3.5 h-3.5 text-gray-400" />
+            <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+              Action Steps
+            </span>
+            {completedSteps > 0 && (
+              <span className="text-[10px] font-bold text-emerald-600 ml-auto">
+                {completedSteps}/{totalSteps}
+              </span>
+            )}
+          </div>
+          <div className="space-y-0.5">
+            {item.actionSteps.map((step) => {
+              const stepKey = `${index}-${step}`;
+              return (
+                <StepCheckbox
+                  key={stepKey}
+                  step={step}
+                  checked={checkedSteps.has(stepKey)}
+                  onToggle={() => onToggleStep(stepKey)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Estimated Impact */}
+      <div className={cn(
+        'flex items-center gap-1.5 text-[11px] font-semibold',
+        allDone ? 'text-emerald-400' : 'text-emerald-600',
+      )}>
+        <CheckCircle2 className="w-3.5 h-3.5" />
+        {item.estimatedImpact}
+        {allDone && (
+          <Badge variant="secondary" className="text-[9px] border-0 bg-emerald-100 text-emerald-700 ml-2">
+            DONE
+          </Badge>
+        )}
+      </div>
+    </motion.div>
+  );
 }
 
 /* ───── Main Quick Checkup Component ───── */
@@ -77,152 +196,37 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
   const [selectedGoal, setSelectedGoal] = useState<CampaignGoal | ''>('');
   const [selectedBudget, setSelectedBudget] = useState('');
   const [selectedPains, setSelectedPains] = useState<string[]>([]);
-
-  const selectedGoals = campaignGoals as unknown as Record<string, (typeof campaignGoals)[CampaignGoal]>;
+  const [checkedSteps, setCheckedSteps] = useState<Set<string>>(new Set());
 
   const canGetInsights = selectedPlatforms.length > 0 && selectedGoal !== '' && selectedBudget !== '';
 
+  // ── Generate insights from the engine (instant, rule-based) ──
   const insights = useMemo<QuickInsights | null>(() => {
     if (!canGetInsights) return null;
-
-    const selectedPlatformData = selectedPlatforms.map(id => platforms[id]);
-    const goalData = selectedGoals[selectedGoal as CampaignGoal];
-    const budgetRange = budgetRanges.find(b => b.id === selectedBudget)!;
-    const budgetMid = Math.round((budgetRange.min + budgetRange.max) / 2);
-    const dailyBudget = Math.round(budgetMid / 30);
-    const perPlatformDaily = Math.round(dailyBudget / selectedPlatforms.length);
-    const minDailyFromPlatforms = Math.min(...selectedPlatformData.map(p => {
-      const match = p.minBudget.match(/[\d.]+/);
-      return match ? parseFloat(match[0]) : 5;
-    }));
-
-    const platformSummary = selectedPlatformData.map(p => ({
-      name: p.name,
-      avgCPC: p.avgCPC,
-      avgCPM: p.avgCPM,
-      audienceSize: p.audienceSize,
-      minBudget: p.minBudget,
-    }));
-
-    const goalMetrics = goalData.keyMetrics;
-
-    let budgetStatus: 'low' | 'moderate' | 'strong';
-    let budgetMessage: string;
-    let budgetRecommendation: string;
-
-    if (perPlatformDaily < minDailyFromPlatforms) {
-      budgetStatus = 'low';
-      budgetMessage = `~$${perPlatformDaily}/day per platform is below the $${minDailyFromPlatforms}/day minimum.`;
-      budgetRecommendation = `Start with ${selectedPlatforms.length === 1 ? 'a higher budget' : 'fewer platforms'} to concentrate spend.`;
-    } else if (perPlatformDaily < minDailyFromPlatforms * 3) {
-      budgetStatus = 'moderate';
-      budgetMessage = `~$${perPlatformDaily}/day per platform is workable for testing.`;
-      budgetRecommendation = 'Start with 1-2 ad sets, run 7 days, then optimize.';
-    } else {
-      budgetStatus = 'strong';
-      budgetMessage = `~$${perPlatformDaily}/day per platform — great for testing multiple strategies.`;
-      budgetRecommendation = 'Allocate 60% to winners, 30% to new tests, 10% to experiments.';
-    }
-
-    const monthlyBudget = budgetMid;
-    let estimatedSavings: string;
-    let estimatedROASBoost: string;
-
-    if (monthlyBudget < 500) {
-      estimatedSavings = `$${Math.round(monthlyBudget * 0.3)}–$${Math.round(monthlyBudget * 0.5)}`;
-      estimatedROASBoost = '1.5x–2x';
-    } else if (monthlyBudget < 2000) {
-      estimatedSavings = `$${Math.round(monthlyBudget * 0.25)}–$${Math.round(monthlyBudget * 0.4)}`;
-      estimatedROASBoost = '2x–3x';
-    } else if (monthlyBudget < 10000) {
-      estimatedSavings = `$${Math.round(monthlyBudget * 0.2)}–$${Math.round(monthlyBudget * 0.35)}`;
-      estimatedROASBoost = '2.5x–4x';
-    } else {
-      estimatedSavings = `$${Math.round(monthlyBudget * 0.15)}–$${Math.round(monthlyBudget * 0.3)}`;
-      estimatedROASBoost = '3x–5x';
-    }
-
-    const actionItems: ActionItem[] = [];
-
-    if (budgetStatus === 'low') {
-      actionItems.push({
-        title: 'Consolidate your budget',
-        description: `Drop to ${selectedPlatforms.length > 1 ? '1 platform' : 'a higher budget tier'} to hit the minimum effective spend. Spread too thin = no data, no learning.`,
-        impact: 'high',
-        estimatedImpact: `Save ${estimatedSavings}/mo from eliminated waste`,
-        icon: <PiggyBank className="w-5 h-5" />,
-      });
-    } else if (perPlatformDaily >= minDailyFromPlatforms * 3) {
-      actionItems.push({
-        title: 'Launch a 60/30/10 test framework',
-        description: '60% budget to proven creatives, 30% to new angles, 10% to wild experiments. This structure alone improves ROAS by 30-40%.',
-        impact: 'high',
-        estimatedImpact: `${estimatedROASBoost} potential ROAS improvement`,
-        icon: <Rocket className="w-5 h-5" />,
-      });
-    } else {
-      actionItems.push({
-        title: 'Set up conversion tracking before spending',
-        description: `${selectedPlatformData.map(p => p.name).join(', ')} — install the pixel/tag and verify events fire. Without this, the platform algorithm is blind.`,
-        impact: 'high',
-        estimatedImpact: `${estimatedSavings}/mo wasted without tracking`,
-        icon: <Target className="w-5 h-5" />,
-      });
-    }
-
-    const creativeTip = selectedPlatformData[0]?.tips?.[2] || 'Test 5+ ad creatives per campaign to find winners';
-    actionItems.push({
-      title: 'Fix your creative strategy',
-      description: creativeTip.split('.').slice(0, 2).join('.') + '. Most advertisers test too few creatives — aim for 5-10 variations per campaign.',
-      impact: 'medium',
-      estimatedImpact: '20-35% lower CPA with better creatives',
-      icon: <Lightbulb className="w-5 h-5" />,
+    return generateInsights({
+      platforms: selectedPlatforms,
+      goal: selectedGoal as CampaignGoal,
+      budgetId: selectedBudget as BudgetId,
+      painPoints: selectedPains,
     });
-
-    const goalName = goalData.name;
-    const relevantMetrics = goalData.keyMetrics.slice(0, 2).join(' and ');
-    actionItems.push({
-      title: `Optimize for ${relevantMetrics} weekly`,
-      description: `For ${goalName}, focus on ${relevantMetrics}. Let campaigns run 7 days before making changes — premature optimization kills performance.`,
-      impact: 'low',
-      estimatedImpact: '15-25% improvement over 30 days',
-      icon: <TrendingUp className="w-5 h-5" />,
-    });
-
-    const painRemedies = selectedPains.map(painId => {
-      const pain = painPoints.find(p => p.id === painId)!;
-      switch (painId) {
-        case 'high_cpa':
-          return { pain: pain.label, fix: 'Use lookalike audiences from best customers, tighten targeting, switch to conversion-optimized bidding.' };
-        case 'low_ctr':
-          return { pain: pain.label, fix: 'Refresh creatives — UGC content, stronger hooks in first 1-2 seconds, clear CTAs. Test different headlines.' };
-        case 'low_roas':
-          return { pain: pain.label, fix: 'Audit targeting for waste, add retargeting for warm audiences, optimize landing pages.' };
-        case 'no_conversions':
-          return { pain: pain.label, fix: 'Verify tracking is installed. Match landing pages to ad promises. Use lead forms to reduce friction.' };
-        case 'wasted_spend':
-          return { pain: pain.label, fix: 'Add negative keywords, set frequency caps, exclude converted audiences, audit overlap.' };
-        case 'unsure_platform':
-          return { pain: pain.label, fix: selectedPlatformData.map(p => `${p.name}: best for ${p.bestFor.slice(0, 3).join(', ')}`).join('. ') + '.' };
-        case 'bad_creatives':
-          return { pain: pain.label, fix: 'Use native formats (UGC for TikTok, carousels for Meta). Test 5-10 per campaign, refresh every 2-3 weeks.' };
-        case 'no_strategy':
-          return { pain: pain.label, fix: 'Build a funnel: awareness → consideration → conversion. Set KPIs per stage. Use the Campaign Planner for details.' };
-        default:
-          return { pain: pain.label, fix: 'Use the Campaign Planner for a personalized strategy.' };
-      }
-    });
-
-    return {
-      actionItems,
-      budgetAssessment: { status: budgetStatus, message: budgetMessage, recommendation: budgetRecommendation },
-      estimatedSavings,
-      estimatedROASBoost,
-      platformSummary,
-      goalMetrics,
-      painRemedies,
-    };
   }, [selectedPlatforms, selectedGoal, selectedBudget, selectedPains, canGetInsights]);
+
+  // ── Interactive checkbox state ──
+  const toggleStep = useCallback((stepKey: string) => {
+    setCheckedSteps(prev => {
+      const next = new Set(prev);
+      if (next.has(stepKey)) next.delete(stepKey);
+      else next.add(stepKey);
+      return next;
+    });
+  }, []);
+
+  // Total progress across all action items
+  const totalStepsCount = insights ? insights.actionItems.reduce((sum, item) => sum + item.actionSteps.length, 0) : 0;
+  const completedStepsCount = insights ? insights.actionItems.reduce((sum, item, i) =>
+    sum + item.actionSteps.filter(s => checkedSteps.has(`${i}-${s}`)).length, 0
+  ) : 0;
+  const allStepsDone = totalStepsCount > 0 && completedStepsCount === totalStepsCount;
 
   const togglePlatform = (id: PlatformId) => {
     setSelectedPlatforms(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]);
@@ -233,7 +237,10 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
   };
 
   const handleGetInsights = () => {
-    if (canGetInsights) setStep('insights');
+    if (canGetInsights) {
+      setCheckedSteps(new Set());
+      setStep('insights');
+    }
   };
 
   const handleReset = () => {
@@ -242,7 +249,12 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
     setSelectedGoal('');
     setSelectedBudget('');
     setSelectedPains([]);
+    setCheckedSteps(new Set());
   };
+
+  // ── Goal display name ──
+  const goalName = selectedGoal ? campaignGoals[selectedGoal as CampaignGoal]?.name : '';
+  const budgetLabel = budgetRanges.find(b => b.id === selectedBudget)?.label;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -265,7 +277,7 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
                 Quick Campaign Checkup
               </h1>
               <p className="text-caption">
-                3 questions. Instant results. No sign-up.
+                3 questions. Instant personalized results. No sign-up.
               </p>
             </div>
 
@@ -402,12 +414,10 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
 
               {/* CTA + Sample Report */}
               <div className="flex flex-col items-center pt-2 pb-6 gap-3">
-                {/* Back link */}
                 <button onClick={onDismiss} className="text-xs text-muted-foreground hover:text-foreground transition-colors self-start">
                   &larr; Back to home
                 </button>
 
-                {/* CTA + Sample side by side */}
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleGetInsights}
@@ -448,7 +458,7 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
                 Your Campaign Insights
               </h1>
               <p className="text-caption">
-                {insights.platformSummary.map(p => p.name).join(', ')} &middot; {selectedGoals[selectedGoal as CampaignGoal]?.name} &middot; {budgetRanges.find(b => b.id === selectedBudget)?.label}
+                {insights.platformSummary.map(p => p.name).join(', ')} &middot; {goalName} &middot; {budgetLabel}
               </p>
             </div>
 
@@ -467,64 +477,51 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4 text-center col-span-2 sm:col-span-1">
                 <Flame className="w-6 h-6 text-blue-600 mx-auto mb-1.5" />
                 <p className="text-[10px] text-blue-600 font-medium uppercase tracking-wider">Top Priority</p>
-                <p className="text-sm font-bold text-blue-700 mt-0.5">{insights.actionItems[0]?.title}</p>
+                <p className="text-[11px] font-bold text-blue-700 mt-0.5 line-clamp-2">{insights.actionItems[0]?.title}</p>
               </div>
             </div>
 
-            {/* 3 Prioritized Action Items */}
+            {/* Overall Progress Bar */}
+            {totalStepsCount > 0 && (
+              <div className="bg-white rounded-xl border p-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[11px] font-semibold text-gray-500 flex items-center gap-1.5">
+                    <ListChecks className="w-3.5 h-3.5" />
+                    {allStepsDone ? 'All actions completed!' : `Check off steps as you do them`}
+                  </span>
+                  <span className="text-[10px] font-bold text-emerald-600">{Math.round((completedStepsCount / totalStepsCount) * 100)}%</span>
+                </div>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(completedStepsCount / totalStepsCount) * 100}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* 3 Prioritized Action Items with Steps */}
             <div className="bg-white rounded-2xl border p-5">
               <h3 className="font-bold text-sm flex items-center gap-2 mb-4">
                 <Star className="w-4 h-4 text-amber-500" />
-                3 Actions to Improve Now — Ranked by Impact
+                {insights.actionItems.length} Actions to Improve Now — Ranked by Impact
               </h3>
               <div className="space-y-3">
                 {insights.actionItems.map((item, i) => (
-                  <motion.div
+                  <ActionItemCard
                     key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className={cn(
-                      'p-4 rounded-xl border-2 transition-all',
-                      item.impact === 'high' && 'border-amber-300 bg-amber-50/50',
-                      item.impact === 'medium' && 'border-blue-200 bg-blue-50/50',
-                      item.impact === 'low' && 'border-muted bg-muted/30',
-                    )}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={cn(
-                        'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
-                        item.impact === 'high' && 'bg-amber-100 text-amber-600',
-                        item.impact === 'medium' && 'bg-blue-100 text-blue-600',
-                        item.impact === 'low' && 'bg-muted text-muted-foreground',
-                      )}>
-                        {item.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-bold">{`#${i + 1}`}</span>
-                          <Badge variant="secondary" className={cn('text-[9px] border-0 font-semibold',
-                            item.impact === 'high' && 'bg-amber-100 text-amber-700',
-                            item.impact === 'medium' && 'bg-blue-100 text-blue-700',
-                            item.impact === 'low' && 'bg-muted text-muted-foreground',
-                          )}>
-                            {item.impact.toUpperCase()} IMPACT
-                          </Badge>
-                        </div>
-                        <h4 className="text-sm font-bold mb-0.5">{item.title}</h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed mb-1.5">{item.description}</p>
-                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600">
-                          <CheckCircle2 className="w-3 h-3" />
-                          {item.estimatedImpact}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
+                    item={item}
+                    index={i}
+                    checkedSteps={checkedSteps}
+                    onToggleStep={toggleStep}
+                  />
                 ))}
               </div>
             </div>
 
-            {/* Budget Assessment — compact */}
+            {/* Budget Assessment */}
             <div className={cn(
               'p-4 rounded-xl border-2',
               insights.budgetAssessment.status === 'low' && 'border-red-200 bg-red-50/50',
@@ -556,7 +553,7 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
               </div>
             </div>
 
-            {/* Platform Benchmarks + Goal Metrics — Side by side */}
+            {/* Platform Benchmarks + Goal Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white rounded-2xl border p-4">
                 <h3 className="font-bold text-sm flex items-center gap-2 mb-3">
@@ -602,7 +599,7 @@ export default function QuickStart({ onGoToPlanner, onDismiss }: { onGoToPlanner
               </div>
             </div>
 
-            {/* Optional: Pain Point Refiner */}
+            {/* Pain Point Refiner */}
             <div className="bg-white rounded-2xl border p-4">
               <h3 className="font-bold text-sm flex items-center gap-2 mb-2">
                 <AlertTriangle className="w-4 h-4 text-red-500" />
