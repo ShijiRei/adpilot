@@ -24,8 +24,8 @@ import { Badge } from '@/components/ui/badge';
 import {
   MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
   Menu, X, Zap, Target, TrendingUp, ArrowRight, CheckCircle2, Shield, Clock, Eye,
-  Facebook, Search, Youtube, Linkedin, Pin
-} from 'lucide-react';
+  Globe, Search, Youtube, Linkedin, MapPin, Music2
+} from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 
 type TabId = 'home' | 'quickstart' | 'planner' | 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
@@ -49,7 +49,8 @@ const navItems: NavItem[] = [
 ];
 
 const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNode }[] = [
-  { id: 'meta', name: 'Meta Ads', icon: <Facebook className="w-4 h-4" /> },
+  { id: 'meta', name: 'Meta Ads', icon: <Globe className="w-4 h-4" /> },
+{ id: 'pinterest', name: 'Pinterest Ads', icon: <MapPin className="w-4 h-4" /> },
   { id: 'tiktok', name: 'TikTok Ads', icon: <Music2 className="w-4 h-4" /> },
   { id: 'google', name: 'Google Ads', icon: <Search className="w-4 h-4" /> },
   { id: 'youtube', name: 'YouTube Ads', icon: <Youtube className="w-4 h-4" /> },
