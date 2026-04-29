@@ -14,15 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AdPilot — Stop Wasting Ad Spend. Get AI Campaign Plans in 5 Minutes.",
-  description: "For founders, ecommerce brands, and marketers — get AI-powered ad campaign plans with clear fixes to lower CPA and boost ROAS across Meta, TikTok, Google, YouTube, LinkedIn & Pinterest.",
+  title: "BoosterBuzz — Stop Wasting Ad Spend. Get AI Campaign Plans in 5 Minutes.",
+  description: "For founders, ecommerce brands, and marketers — get AI-powered ad campaign plans with clear fixes to lower CPA and boost ROAS across Meta, TikTok, Google, YouTube, LinkedIn & Pin[...]
   keywords: ["ad campaigns", "lower CPA", "boost ROAS", "ad audit", "Meta Ads", "TikTok Ads", "Google Ads", "campaign optimization", "digital advertising", "ad spend", "ecommerce marketing"],
-  authors: [{ name: "AdPilot" }],
+  authors: [{ name: "BoosterBuzz" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   openGraph: {
-    title: "AdPilot — Stop Wasting Ad Spend. Get AI Campaign Plans in 5 Minutes.",
+    title: "BoosterBuzz — Stop Wasting Ad Spend. Get AI Campaign Plans in 5 Minutes.",
     description: "For founders & marketers — get AI-powered campaign plans with clear fixes to lower CPA and boost ROAS.",
     type: "website",
   },

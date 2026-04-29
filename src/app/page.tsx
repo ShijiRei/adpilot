@@ -44,7 +44,7 @@ const navItems: NavItem[] = [
 
 const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNode }[] = [
   { id: 'meta', name: 'Meta Ads', icon: <Facebook className="w-4 h-4" /> },
-  { id: 'tiktok', name: 'TikTok Ads', icon: <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.46V13a8.28 8.28 0 005.58 2.15v-3.44a4.85 4.85 0 01-4.84-1.47l-.16-.16z"/></svg> },
+  { id: 'tiktok', name: 'TikTok Ads', icon: <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.8[...]
   { id: 'google', name: 'Google Ads', icon: <Search className="w-4 h-4" /> },
   { id: 'youtube', name: 'YouTube Ads', icon: <Youtube className="w-4 h-4" /> },
   { id: 'linkedin', name: 'LinkedIn Ads', icon: <Linkedin className="w-4 h-4" /> },
@@ -152,7 +152,7 @@ function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onCha
             { icon: <Calculator className="w-4 h-4" />, title: 'Budget Calculator', desc: 'Estimate CPC, CTR &amp; results before you spend a cent.' },
             { icon: <Sparkles className="w-4 h-4" />, title: 'Ad Copy Generator', desc: 'Headlines, body copy &amp; CTAs in 5 tones.' },
           ].map((f) => (
-            <div key={f.title} className="flex items-start gap-3 p-3 rounded-xl card-interactive cursor-pointer" onClick={f.title === 'Quick Checkup' ? onGetStarted : f.title === 'AI Advisor' ? onChat : undefined}>
+            <div key={f.title} className="flex items-start gap-3 p-3 rounded-xl card-interactive cursor-pointer" onClick={f.title === 'Quick Checkup' ? onGetStarted : f.title === 'AI Advisor' ? o[...]
               <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
                 {f.icon}
               </div>
@@ -210,7 +210,7 @@ export default function Home() {
     {
       id: 'welcome',
       role: 'assistant',
-      content: `Hi! I'm **AdBot**, your personal ad campaign advisor. I can help you plan, optimize, and troubleshoot campaigns across all major platforms.
+      content: `Hi! I'm **BoosterBot**, your personal ad campaign advisor. I can help you plan, optimize, and troubleshoot campaigns across all major platforms.
 
 **Ask me anything about:**
 - Setting up your first campaign
@@ -261,7 +261,7 @@ How can I help you today?`,
               <Zap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-lg leading-tight">AdPilot</h1>
+              <h1 className="font-bold text-lg leading-tight">BoosterBuzz</h1>
               <p className="text-xs text-muted-foreground">Campaign Advisor</p>
             </div>
             <button
@@ -424,7 +424,7 @@ How can I help you today?`,
                       <Zap className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm">AdBot — AI Campaign Advisor</h3>
+                      <h3 className="font-semibold text-sm">BoosterBot — AI Campaign Advisor</h3>
                       <p className="text-xs text-emerald-600 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
                         Online — Ready to help
