@@ -1,5 +1,6 @@
 'use client';
 
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import {
