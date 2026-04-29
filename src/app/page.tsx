@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import {
   MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
