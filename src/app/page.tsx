@@ -1,5 +1,6 @@
 'use client';
 
+import { SampleReportDialog } from "@/components/sample-report-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
