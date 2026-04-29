@@ -152,7 +152,17 @@ function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onCha
             { icon: <Calculator className="w-4 h-4" />, title: 'Budget Calculator', desc: 'Estimate CPC, CTR &amp; results before you spend a cent.' },
             { icon: <Sparkles className="w-4 h-4" />, title: 'Ad Copy Generator', desc: 'Headlines, body copy &amp; CTAs in 5 tones.' },
           ].map((f) => (
-            <div key={f.title} className="flex items-start gap-3 p-3 rounded-xl card-interactive cursor-pointer" onClick={f.title === 'Quick Checkup' ? onGetStarted : f.title === 'AI Advisor' ? o[...]
+           <div
+  key={f.title}
+  className="flex items-start gap-3 p-3 rounded-xl card-interactive cursor-pointer"
+  onClick={
+    f.title === "Quick Checkup"
+      ? onGetStarted
+      : f.title === "AI Advisor"
+      ? onOpenChat
+      : undefined
+  }
+             >
               <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
                 {f.icon}
               </div>
