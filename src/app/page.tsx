@@ -44,7 +44,7 @@ const navItems: NavItem[] = [
 
 const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNode }[] = [
   { id: 'meta', name: 'Meta Ads', icon: <Facebook className="w-4 h-4" /> },
-  { id: 'tiktok', name: 'TikTok Ads', icon: <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.8[...]
+  { id: 'tiktok', name: 'TikTok Ads', icon: <Music2 className="w-4 h-4" /> },
   { id: 'google', name: 'Google Ads', icon: <Search className="w-4 h-4" /> },
   { id: 'youtube', name: 'YouTube Ads', icon: <Youtube className="w-4 h-4" /> },
   { id: 'linkedin', name: 'LinkedIn Ads', icon: <Linkedin className="w-4 h-4" /> },
