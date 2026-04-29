@@ -1,5 +1,10 @@
 'use client';
 
+import {
+  MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
+  Menu, X, Zap, Target, TrendingUp, ArrowRight, CheckCircle2, Shield, Clock, Eye,
+  Globe, Search, Youtube, Linkedin, MapPin, Music2
+} from "lucide-react";
 import { Facebook, Search, Youtube, Linkedin, Pin, Sparkles, Music2 } from "lucide-react";
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
