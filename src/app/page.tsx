@@ -151,7 +151,10 @@ function HeroSection({ onGetStarted, onChat }: { onGetStarted: () => void; onCha
       ? onGetStarted
       : f.title === "AI Advisor"
       ? onOpenChat
-      : undefined
+      const onOpenChat = () => {
+  // open chat modal or navigate
+  setIsChatOpen(true); // if you have this state
+};
   }
              >
               <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
