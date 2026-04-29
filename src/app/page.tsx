@@ -1,32 +1,12 @@
 'use client';
 
+import { useState } from "react";
 import {
   MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
   Menu, X, Zap, Target, TrendingUp, ArrowRight, CheckCircle2, Shield, Clock, Eye,
   Globe, Search, Youtube, Linkedin, MapPin, Music2
 } from "lucide-react";
-import { Facebook, Search, Youtube, Linkedin, Pin, Sparkles, Music2 } from "lucide-react";
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { PlatformId } from '@/lib/ad-platforms';
-import AIAdvisor, { Message } from '@/components/advisor/ai-advisor';
-import PlatformGuide from '@/components/advisor/platform-guide';
-import BudgetCalculator from '@/components/advisor/budget-calc';
-import AdCopyGenerator from '@/components/advisor/ad-copy';
-import PlatformComparison from '@/components/advisor/comparison';
-import GuidedPlanner from '@/components/advisor/guided-planner';
-import QuickStart from '@/components/advisor/quick-start';
-import SampleReportDialog from '@/components/sample-report-dialog';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import {
-  MessageSquare, BookOpen, Calculator, Sparkles, Scale, Wand2,
-  Menu, X, Zap, Target, TrendingUp, ArrowRight, CheckCircle2, Shield, Clock, Eye,
-  Globe, Search, Youtube, Linkedin, MapPin, Music2
-} from "lucide-react";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 type TabId = 'home' | 'quickstart' | 'planner' | 'advisor' | 'guide' | 'budget' | 'copy' | 'comparison';
 
