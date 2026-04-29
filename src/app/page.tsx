@@ -35,7 +35,7 @@ const platformSidebarItems: { id: PlatformId; name: string; icon: React.ReactNod
   { id: 'google', name: 'Google Ads', icon: <Search className="w-4 h-4" /> },
   { id: 'youtube', name: 'YouTube Ads', icon: <Youtube className="w-4 h-4" /> },
   { id: 'linkedin', name: 'LinkedIn Ads', icon: <Linkedin className="w-4 h-4" /> },
-  { id: 'pinterest', name: 'Pinterest Ads', icon: <Pin className="w-4 h-4" /> },
+  { id: 'pinterest', name: 'Pinterest Ads', icon: <MapPin className="w-4 h-4" /> },
 ];
 
 /* ───── Hero / Landing Section ───── */
